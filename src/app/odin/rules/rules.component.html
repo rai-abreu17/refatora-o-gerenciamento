@@ -1,0 +1,112 @@
+<div class="odin-rules">
+  <app-page-header
+    title="Regras do ODIN"
+    [badgeCount]="totalElements()">
+    <div class="header-actions">
+      <button class="btn btn-primary btn-sm" (click)="openCreateModal()">
+        <i class="bi bi-plus-lg"></i> Nova Regra
+      </button>
+      <button class="btn btn-outline-secondary btn-sm" (click)="goBack()">
+        <i class="bi bi-x-lg"></i> Fechar
+      </button>
+    </div>
+  </app-page-header>
+
+  <div class="search-bar mb-3">
+    <div class="input-group input-group-sm" style="max-width: 400px;">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Buscar regras..."
+        [ngModel]="searchTerm()"
+        (ngModelChange)="onSearch($event)">
+    </div>
+  </div>
+
+  <div class="table-container">
+    <div class="loading-overlay" *ngIf="loading()">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover table-striped align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>Sistema</th>
+            <th>Categoria / Dimensão</th>
+            <th>Perfil</th>
+            <th>Condições</th>
+            <th>Situação</th>
+            <th class="text-center">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let rule of rules()">
+            <td>
+              <span class="badge bg-info text-dark">{{ rule.sistema }}</span>
+            </td>
+            <td>{{ rule.categoria }}</td>
+            <td>{{ rule.perfil }}</td>
+            <td class="condicoes-cell" [title]="rule.condicoes">{{ rule.condicoes }}</td>
+            <td>
+              <app-status-badge [status]="rule.situacao"></app-status-badge>
+            </td>
+            <td class="text-center">
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-primary" title="Editar" (click)="openEditModal(rule)">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-outline-danger" title="Excluir" (click)="openDeleteModal(rule)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="rules().length === 0 && !loading()">
+            <td colspan="6" class="text-center text-muted py-4">
+              Nenhuma regra encontrada.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <nav *ngIf="totalPages() > 1">
+      <ul class="pagination pagination-sm justify-content-center">
+        <li class="page-item" [class.disabled]="currentPage() === 0">
+          <button class="page-link" (click)="onPageChange(currentPage() - 1)">Anterior</button>
+        </li>
+        <li class="page-item" *ngFor="let p of [].constructor(totalPages()); let i = index"
+            [class.active]="i === currentPage()">
+          <button class="page-link" (click)="onPageChange(i)">{{ i + 1 }}</button>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage() >= totalPages() - 1">
+          <button class="page-link" (click)="onPageChange(currentPage() + 1)">Próximo</button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<!-- Form Modal -->
+<app-odin-rule-form
+  *ngIf="showFormModal()"
+  [rule]="editingRule()"
+  (save)="onSaveRule($event)"
+  (cancel)="onCancelForm()">
+</app-odin-rule-form>
+
+<!-- Delete Confirmation Modal -->
+<app-confirm-modal
+  *ngIf="showDeleteModal()"
+  title="Confirmar Exclusão"
+  [message]="'Deseja realmente excluir a regra \'' + (deletingRule()?.categoria || '') + '\'?'"
+  [confirmLabel]="'Excluir'"
+  (confirmed)="confirmDelete()"
+  (cancelled)="cancelDelete()">
+</app-confirm-modal>
+
+<app-toast></app-toast>

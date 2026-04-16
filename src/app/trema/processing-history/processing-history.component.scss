@@ -1,0 +1,48 @@
+.processing-history {
+  padding: 1.5rem;
+
+  .header-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .table-container {
+    position: relative;
+    min-height: 200px;
+  }
+
+  .loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  .table {
+    th {
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    td {
+      font-size: 0.85rem;
+      vertical-align: middle;
+    }
+  }
+
+  .error-row {
+    border-left: 4px solid var(--bs-danger, #dc3545);
+  }
+}

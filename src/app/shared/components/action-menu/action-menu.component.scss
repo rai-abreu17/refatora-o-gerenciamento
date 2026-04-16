@@ -1,0 +1,48 @@
+.action-menu-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.action-trigger {
+  font-size: 1.2rem;
+  line-height: 1;
+  padding: 2px 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 4px;
+
+  &:hover {
+    background-color: #e9ecef;
+  }
+}
+
+.action-dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  min-width: 160px;
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  padding: 4px 0;
+
+  .dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 7px 14px;
+    border: none;
+    background: none;
+    text-align: left;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.84rem;
+    color: #212529;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #f8f9fa;
+    }
+  }
+}

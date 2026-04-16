@@ -1,0 +1,73 @@
+<app-page-header
+  [title]="'Dashboard PJe'"
+  [breadcrumbs]="[{label: 'PJe'}, {label: 'Dashboard'}]">
+</app-page-header>
+
+<!-- Controls -->
+<div class="dashboard-controls">
+  <app-period-filter
+    [selected]="granularity()"
+    (change)="onGranularityChange($event)">
+  </app-period-filter>
+
+  <mat-form-field appearance="outline" class="date-field">
+    <mat-label>Periodo</mat-label>
+    <mat-date-range-input [rangePicker]="picker">
+      <input matStartDate [value]="startDate()" (dateChange)="onStartDateChange($event.value)" placeholder="Inicio">
+      <input matEndDate [value]="endDate()" (dateChange)="onEndDateChange($event.value)" placeholder="Fim">
+    </mat-date-range-input>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+  </mat-form-field>
+</div>
+
+<!-- KPI Cards -->
+<div class="kpi-grid">
+  <app-kpi-card
+    [title]="'Total Acessos'"
+    [value]="totalAcessos"
+    [icon]="'bi-people'"
+    [color]="'#1B4F8A'">
+  </app-kpi-card>
+  <app-kpi-card
+    [title]="'Pico de Acessos'"
+    [value]="picoAcessos"
+    [subtitle]="picoSubtitle"
+    [icon]="'bi-graph-up-arrow'"
+    [color]="'#2E7D32'">
+  </app-kpi-card>
+  <app-kpi-card
+    [title]="'Menor Acesso'"
+    [value]="menorAcesso"
+    [subtitle]="menorSubtitle"
+    [icon]="'bi-graph-down-arrow'"
+    [color]="'#F57C00'">
+  </app-kpi-card>
+</div>
+
+<!-- Chart -->
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Acessos ao PJe</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    @if (loading()) {
+      <div class="chart-placeholder">
+        <mat-spinner diameter="48"></mat-spinner>
+      </div>
+    } @else if (!data1G() && !data2G()) {
+      <div class="chart-placeholder">
+        <mat-icon class="empty-icon">bar_chart</mat-icon>
+        <p>Nenhum dado disponivel para o periodo selecionado.</p>
+      </div>
+    } @else {
+      <div class="chart-container">
+        <canvas baseChart
+          [data]="chartData"
+          [options]="chartOptions"
+          type="line">
+        </canvas>
+      </div>
+    }
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,14 @@
+.filter-bar {
+  font-family: 'IBM Plex Sans', sans-serif;
+  border: 1px solid var(--color-border, #dee2e6);
+
+  .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid var(--color-border, #dee2e6);
+  }
+
+  .multiselect-group {
+    max-height: 120px;
+    overflow-y: auto;
+  }
+}

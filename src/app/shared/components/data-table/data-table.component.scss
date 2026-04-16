@@ -1,0 +1,66 @@
+.data-table-wrapper {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.table {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.85rem;
+
+  thead th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #495057;
+    white-space: nowrap;
+    border-bottom-width: 2px;
+    user-select: none;
+
+    &.sortable {
+      cursor: pointer;
+
+      &:hover {
+        background-color: #e9ecef;
+      }
+    }
+  }
+
+  td {
+    vertical-align: middle;
+  }
+}
+
+.font-mono {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.82rem;
+}
+
+.sort-icon {
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
+
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 8px;
+}
+
+.pagination .page-link {
+  color: var(--color-primary, #283593);
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--color-primary, #283593);
+  border-color: var(--color-primary, #283593);
+  color: #fff;
+}

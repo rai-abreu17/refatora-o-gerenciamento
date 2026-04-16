@@ -1,0 +1,132 @@
+<div class="trema-management-panel">
+  <app-page-header
+    title="Painel de Gerenciamento - TRE-MA"
+    [badgeCount]="totalElements()">
+    <div class="header-actions">
+      <button class="btn btn-outline-info btn-sm" (click)="navigateToHistory()">
+        <i class="bi bi-clock-history"></i> Histórico de Processamento
+      </button>
+      <button class="btn btn-primary btn-sm" (click)="openProcessConfirm()" [disabled]="processing()">
+        <span *ngIf="processing()" class="spinner-border spinner-border-sm me-1" role="status"></span>
+        <i *ngIf="!processing()" class="bi bi-arrow-repeat"></i>
+        {{ processing() ? 'Processando...' : 'Processar Usuários do TRE-MA' }}
+      </button>
+    </div>
+  </app-page-header>
+
+  <div class="meta-info mb-3" *ngIf="lastUpdate()">
+    <small class="text-muted">
+      Última atualização: <strong>{{ lastUpdate() }}</strong>
+      &nbsp;|&nbsp;
+      Tempo de processamento: <strong>{{ processingTime() }}</strong>
+    </small>
+  </div>
+
+  <app-filter-bar
+    [filters]="filterConfig"
+    (search)="onFilterChange($event)"
+    (clear)="onFilterClear()">
+  </app-filter-bar>
+
+  <div class="table-container mt-3">
+    <div class="loading-overlay" *ngIf="loading() || processing()">
+      <div class="text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+        <p class="text-muted mt-2" *ngIf="processing()">Processando usuários do TRE-MA, aguarde...</p>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover table-striped table-sm align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>Título Eleitoral</th>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Data Nascimento</th>
+            <th>Gênero</th>
+            <th>Categoria Funcional</th>
+            <th>Lotação</th>
+            <th>Ponto Atendimento</th>
+            <th>Menção Atendimento</th>
+            <th>Possui LDAP?</th>
+            <th>Login</th>
+            <th>Criação Conta</th>
+            <th>Modificação Conta</th>
+            <th>Último Login</th>
+            <th>Expiração Senha</th>
+            <th>Expiração Conta</th>
+            <th>Data File Acesso</th>
+            <th>Situação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users()">
+            <td>{{ user.id }}</td>
+            <td><span class="font-monospace">{{ user.tituloEleitoral }}</span></td>
+            <td class="text-nowrap">{{ user.nome }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ formatDate(user.dataNascimento) }}</td>
+            <td>{{ user.genero }}</td>
+            <td>{{ user.categoriaFuncional }}</td>
+            <td>{{ user.lotacao || '-' }}</td>
+            <td>{{ user.pontoAtendimento || '-' }}</td>
+            <td>{{ user.mencaoAtendimento || '-' }}</td>
+            <td class="text-center">
+              <span *ngIf="user.possuiLdap" class="text-success fw-bold">&#10004;</span>
+              <span *ngIf="!user.possuiLdap" class="text-danger fw-bold">&#10008;</span>
+            </td>
+            <td class="text-center">
+              <span *ngIf="user.login" class="text-success fw-bold">&#10004;</span>
+              <span *ngIf="!user.login" class="text-danger fw-bold">&#10008;</span>
+            </td>
+            <td>{{ formatDate(user.dataCriacaoConta) }}</td>
+            <td>{{ formatDate(user.dataModificacaoConta) }}</td>
+            <td>{{ user.ultimoLogin ? formatDate(user.ultimoLogin) : '-' }}</td>
+            <td>{{ formatDate(user.expiracaoSenha) }}</td>
+            <td>{{ formatDate(user.expiracaoConta) }}</td>
+            <td>{{ user.dataFileAcesso ? formatDate(user.dataFileAcesso) : '-' }}</td>
+            <td>
+              <app-status-badge [status]="user.situacao"></app-status-badge>
+            </td>
+          </tr>
+          <tr *ngIf="users().length === 0 && !loading()">
+            <td colspan="19" class="text-center text-muted py-4">
+              Nenhum usuário encontrado para os filtros selecionados.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <nav *ngIf="totalPages() > 1">
+      <ul class="pagination pagination-sm justify-content-center">
+        <li class="page-item" [class.disabled]="currentPage() === 0">
+          <button class="page-link" (click)="onPageChange(currentPage() - 1)">Anterior</button>
+        </li>
+        <li class="page-item" *ngFor="let p of [].constructor(totalPages()); let i = index"
+            [class.active]="i === currentPage()">
+          <button class="page-link" (click)="onPageChange(i)">{{ i + 1 }}</button>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage() >= totalPages() - 1">
+          <button class="page-link" (click)="onPageChange(currentPage() + 1)">Próximo</button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<!-- Process Confirmation Modal -->
+<app-confirm-modal
+  *ngIf="showProcessConfirm()"
+  title="Confirmar Processamento"
+  message="Deseja realmente processar os usuários do TRE-MA? Este processo pode levar alguns minutos."
+  [confirmLabel]="'Processar'"
+  (confirmed)="confirmProcess()"
+  (cancelled)="cancelProcess()">
+</app-confirm-modal>
+
+<app-toast></app-toast>

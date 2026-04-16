@@ -1,0 +1,114 @@
+<app-page-header
+  [title]="'Historico de Remocao'"
+  [badgeCount]="total()"
+  [breadcrumbs]="[{label: 'PJe', link: '/pje/management'}, {label: 'Historico de Remocao'}]">
+  <a routerLink="/pje/management" mat-stroked-button>
+    <mat-icon>close</mat-icon> Fechar
+  </a>
+</app-page-header>
+
+<div class="table-card">
+  <mat-tab-group (selectedIndexChange)="onTabChange($event)" animationDuration="200ms">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon>list</mat-icon>&nbsp;Todos ({{ allRecords.length }})
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon>person</mat-icon>&nbsp;Manuais
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon>smart_toy</mat-icon>&nbsp;Automaticos
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="48"></mat-spinner>
+    </div>
+  } @else {
+    <div class="table-toolbar">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Buscar</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Nome, perfil, lotacao...">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div class="table-responsive">
+      <table mat-table [dataSource]="dataSource" matSort>
+        <!-- Nome -->
+        <ng-container matColumnDef="nome">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Nome</th>
+          <td mat-cell *matCellDef="let row">{{ row.nome }}</td>
+        </ng-container>
+
+        <!-- Sistema -->
+        <ng-container matColumnDef="sistema">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Sistema</th>
+          <td mat-cell *matCellDef="let row">{{ row.sistema }}</td>
+        </ng-container>
+
+        <!-- Perfil -->
+        <ng-container matColumnDef="perfil">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Perfil</th>
+          <td mat-cell *matCellDef="let row">{{ row.perfil }}</td>
+        </ng-container>
+
+        <!-- Tipo Remocao -->
+        <ng-container matColumnDef="tipoRemocao">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Tipo</th>
+          <td mat-cell *matCellDef="let row">
+            <mat-chip>
+              <mat-icon matChipAvatar>{{ row.tipoRemocao === 'Automatico' ? 'smart_toy' : 'person' }}</mat-icon>
+              {{ row.tipoRemocao }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <!-- Data Remocao -->
+        <ng-container matColumnDef="dataRemocao">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Data Remocao</th>
+          <td mat-cell *matCellDef="let row">{{ row.dataRemocao }}</td>
+        </ng-container>
+
+        <!-- Situacao -->
+        <ng-container matColumnDef="situacao">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Situacao</th>
+          <td mat-cell *matCellDef="let row">
+            <app-status-chip [status]="row.situacao"></app-status-chip>
+          </td>
+        </ng-container>
+
+        <!-- Detalhes -->
+        <ng-container matColumnDef="detalhes">
+          <th mat-header-cell *matHeaderCellDef>Detalhes</th>
+          <td mat-cell *matCellDef="let row">
+            <button mat-icon-button matTooltip="Ver detalhes" (click)="openDetail(row)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
+            Nenhum registro encontrado.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <mat-paginator
+      [pageSizeOptions]="[10, 25, 50]"
+      [pageSize]="25"
+      showFirstLastButtons>
+    </mat-paginator>
+  }
+</div>

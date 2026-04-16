@@ -1,0 +1,49 @@
+.odin-rules {
+  padding: 1.5rem;
+
+  .header-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .search-bar {
+    padding: 0.5rem 0;
+  }
+
+  .table-container {
+    position: relative;
+    min-height: 200px;
+  }
+
+  .loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+
+  .condicoes-cell {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .table th {
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .table td {
+    font-size: 0.875rem;
+    vertical-align: middle;
+  }
+}

@@ -1,0 +1,44 @@
+:host { display: block; }
+
+.table-card {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.table-toolbar {
+  padding: 12px 16px 0;
+}
+
+.search-field {
+  width: 320px;
+  max-width: 100%;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.no-data {
+  text-align: center;
+  padding: 32px !important;
+  color: var(--color-text-secondary, #666);
+}
+
+@media (max-width: 768px) {
+  .search-field {
+    width: 100%;
+  }
+}

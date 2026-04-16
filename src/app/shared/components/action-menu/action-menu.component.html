@@ -1,0 +1,18 @@
+<div class="action-menu-wrapper">
+  <button class="btn btn-sm btn-light action-trigger" (click)="toggle()" aria-label="Ações">
+    &#8942;
+  </button>
+
+  @if (isOpen()) {
+    <div class="action-dropdown">
+      @for (action of actions(); track action.key) {
+        <button class="dropdown-item" (click)="onAction(action.key)">
+          @if (action.icon) {
+            <span class="me-2">{{ action.icon }}</span>
+          }
+          {{ action.label }}
+        </button>
+      }
+    </div>
+  }
+</div>

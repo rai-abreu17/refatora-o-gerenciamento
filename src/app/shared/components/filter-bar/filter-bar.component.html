@@ -1,0 +1,75 @@
+<div class="filter-bar card mb-3">
+  <div class="card-header d-flex justify-content-between align-items-center py-2" (click)="toggleCollapse()" style="cursor: pointer;">
+    <span class="fw-semibold small">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16" class="me-1">
+        <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5z"/>
+      </svg>
+      Filtros
+    </span>
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"
+      [style.transform]="collapsed() ? 'rotate(-90deg)' : 'rotate(0)'"
+      style="transition: transform 0.2s">
+      <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
+    </svg>
+  </div>
+
+  @if (!collapsed()) {
+    <div class="card-body py-3">
+      <div class="row g-3">
+        @for (filter of filters(); track filter.key) {
+          <div class="col-md-4 col-lg-3">
+            <label class="form-label small fw-medium">{{ filter.label }}</label>
+            @switch (filter.type) {
+              @case ('text') {
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  [(ngModel)]="filterValues[filter.key]"
+                  [placeholder]="filter.label" />
+              }
+              @case ('number') {
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  [(ngModel)]="filterValues[filter.key]" />
+              }
+              @case ('select') {
+                <select class="form-select form-select-sm" [(ngModel)]="filterValues[filter.key]">
+                  <option value="">Todos</option>
+                  @for (opt of filter.options; track opt) {
+                    <option [value]="opt">{{ opt }}</option>
+                  }
+                </select>
+              }
+              @case ('multiselect') {
+                <div class="multiselect-group">
+                  @for (opt of filter.options; track opt) {
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        [id]="filter.key + '_' + opt"
+                        [checked]="isMultiselectChecked(filter.key, opt)"
+                        (change)="onMultiselectChange(filter.key, opt, $event)" />
+                      <label class="form-check-label small" [for]="filter.key + '_' + opt">{{ opt }}</label>
+                    </div>
+                  }
+                </div>
+              }
+            }
+          </div>
+        }
+      </div>
+
+      <div class="d-flex gap-2 mt-3">
+        <button class="btn btn-primary btn-sm" (click)="onSearch()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16" class="me-1">
+            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+          </svg>
+          Pesquisar
+        </button>
+        <button class="btn btn-outline-secondary btn-sm" (click)="onClear()">Limpar</button>
+      </div>
+    </div>
+  }
+</div>

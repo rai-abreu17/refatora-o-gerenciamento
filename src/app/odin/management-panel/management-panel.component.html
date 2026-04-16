@@ -1,0 +1,64 @@
+<div class="odin-management-panel">
+  <app-page-header
+    title="Painel de Gerenciamento - ODIN"
+    [badgeCount]="totalElements()">
+    <div class="header-actions">
+      <button class="btn btn-outline-primary btn-sm" (click)="navigateToRules()">
+        <i class="bi bi-gear"></i> Regras do ODIN
+      </button>
+    </div>
+  </app-page-header>
+
+  <div class="meta-info mb-3" *ngIf="lastUpdate()">
+    <small class="text-muted">
+      Última atualização: <strong>{{ lastUpdate() }}</strong>
+      &nbsp;|&nbsp;
+      Tempo de processamento: <strong>{{ processingTime() }}</strong>
+    </small>
+  </div>
+
+  <app-filter-bar
+    [filters]="filterConfig"
+    (search)="onFilterChange($event)"
+    (clear)="onFilterClear()">
+  </app-filter-bar>
+
+  <div class="table-container mt-3">
+    <div class="loading-overlay" *ngIf="loading()">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+    </div>
+
+    <app-data-table
+      [columns]="columns"
+      [data]="users()"
+      [loading]="loading()"
+      [totalItems]="totalElements()"
+      [pageSize]="pageSize()"
+      (pageChange)="onPageChange($event)">
+
+      <ng-template #cellTemplate let-row let-col="column">
+        <ng-container [ngSwitch]="col.key">
+          <span *ngSwitchCase="'cpf'" class="font-monospace">{{ row.cpf }}</span>
+          <app-status-badge *ngSwitchCase="'situacao'" [status]="row.situacao"></app-status-badge>
+          <div *ngSwitchCase="'acoes'">
+            <app-action-menu [actions]="[
+              { label: 'Visualizar', icon: 'bi-eye', key: 'view' },
+              { label: 'Editar', icon: 'bi-pencil', key: 'edit' }
+            ]" (actionClick)="onRowAction($event, row)">
+            </app-action-menu>
+          </div>
+          <span *ngSwitchDefault>{{ row[col.key] }}</span>
+        </ng-container>
+      </ng-template>
+    </app-data-table>
+  </div>
+
+  <div class="no-results text-center py-5" *ngIf="!loading() && users().length === 0">
+    <i class="bi bi-search fs-1 text-muted"></i>
+    <p class="text-muted mt-2">Nenhum usuário encontrado para os filtros selecionados.</p>
+  </div>
+</div>
+
+<app-toast></app-toast>

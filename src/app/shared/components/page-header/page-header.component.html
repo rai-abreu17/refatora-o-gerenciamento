@@ -1,0 +1,27 @@
+<div class="page-header">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb mb-1">
+      @for (crumb of breadcrumbs(); track crumb.label; let last = $last) {
+        <li class="breadcrumb-item" [class.active]="last">
+          @if (crumb.link && !last) {
+            <a [routerLink]="crumb.link">{{ crumb.label }}</a>
+          } @else {
+            {{ crumb.label }}
+          }
+        </li>
+      }
+    </ol>
+  </nav>
+
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <div class="d-flex align-items-center gap-2">
+      <h1 class="page-title mb-0">{{ title() }}</h1>
+      @if (badgeCount() !== undefined) {
+        <span class="badge bg-primary rounded-pill">{{ badgeCount() }}</span>
+      }
+    </div>
+    <div class="page-actions">
+      <ng-content />
+    </div>
+  </div>
+</div>

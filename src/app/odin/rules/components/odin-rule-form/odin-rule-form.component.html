@@ -1,0 +1,74 @@
+<div class="modal-backdrop fade show"></div>
+<div class="modal d-block fade show" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ isEdit ? 'Editar Regra' : 'Nova Regra' }} - ODIN
+        </h5>
+        <button type="button" class="btn-close" (click)="onCancel()"></button>
+      </div>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Sistema</label>
+              <input type="text" class="form-control" formControlName="sistema" readonly>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Situação <span class="text-danger">*</span></label>
+              <select class="form-select" formControlName="situacao">
+                <option value="ATIVO">Ativo</option>
+                <option value="INATIVO">Inativo</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Categoria <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" formControlName="categoria"
+                     placeholder="Ex: Acesso Administrativo"
+                     [class.is-invalid]="form.get('categoria')?.touched && form.get('categoria')?.invalid">
+              <div class="invalid-feedback" *ngIf="form.get('categoria')?.errors?.['required']">
+                Categoria é obrigatória.
+              </div>
+              <div class="invalid-feedback" *ngIf="form.get('categoria')?.errors?.['minlength']">
+                Mínimo de 3 caracteres.
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Perfil <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" formControlName="perfil"
+                     placeholder="Ex: Administrador"
+                     [class.is-invalid]="form.get('perfil')?.touched && form.get('perfil')?.invalid">
+              <div class="invalid-feedback" *ngIf="form.get('perfil')?.errors?.['required']">
+                Perfil é obrigatório.
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Condições <span class="text-danger">*</span></label>
+              <textarea class="form-control" formControlName="condicoes" rows="4"
+                        placeholder="Descreva as condições para aplicação desta regra..."
+                        [class.is-invalid]="form.get('condicoes')?.touched && form.get('condicoes')?.invalid">
+              </textarea>
+              <div class="invalid-feedback" *ngIf="form.get('condicoes')?.errors?.['required']">
+                Condições são obrigatórias.
+              </div>
+              <div class="invalid-feedback" *ngIf="form.get('condicoes')?.errors?.['minlength']">
+                Mínimo de 10 caracteres.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-lg"></i> {{ isEdit ? 'Salvar Alterações' : 'Criar Regra' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

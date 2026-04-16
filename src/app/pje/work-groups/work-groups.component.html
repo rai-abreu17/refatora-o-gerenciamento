@@ -1,0 +1,97 @@
+<app-page-header
+  [title]="'Grupos de Trabalho'"
+  [badgeCount]="filteredGroups().length"
+  [breadcrumbs]="[{label: 'PJe', link: '/pje/management'}, {label: 'Grupos de Trabalho'}]">
+  <button mat-flat-button color="primary" (click)="openCreateGroup()">
+    <mat-icon>add</mat-icon> Novo Grupo
+  </button>
+</app-page-header>
+
+<div class="toolbar">
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-label>Buscar grupos</mat-label>
+    <input matInput [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)" placeholder="Nome, origem...">
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+  <span class="record-count">{{ filteredGroups().length }} de {{ groups().length }} grupos</span>
+</div>
+
+@if (loading()) {
+  <div class="loading-container">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+} @else if (filteredGroups().length === 0) {
+  <div class="empty-state">
+    <mat-icon class="empty-icon">group_off</mat-icon>
+    <p>Nenhum grupo encontrado.</p>
+  </div>
+} @else {
+  <mat-accordion multi="false">
+    @for (group of filteredGroups(); track group.id) {
+      <mat-expansion-panel
+        (opened)="onPanelOpened(group)"
+        (closed)="onPanelClosed(group)">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon class="group-icon">groups</mat-icon>
+            {{ group.nome }}
+          </mat-panel-title>
+          <mat-panel-description>
+            <mat-chip>{{ group.origem }}</mat-chip>
+            <span class="member-count">
+              <mat-icon>person</mat-icon> {{ group.qtdMembros }}
+            </span>
+            <span class="created-date">{{ group.createdAt }}</span>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <!-- Panel Content: Actions + Members -->
+        <div class="panel-actions">
+          <button mat-stroked-button (click)="openAddMember(group.id)">
+            <mat-icon>person_add</mat-icon> Adicionar Membro
+          </button>
+          <button mat-stroked-button (click)="openEditGroup(group)">
+            <mat-icon>edit</mat-icon> Editar
+          </button>
+          <button mat-stroked-button color="warn" (click)="confirmDeleteGroup(group)">
+            <mat-icon>delete</mat-icon> Excluir
+          </button>
+        </div>
+
+        @if (loadingMembers() && expandedGroupId() === group.id) {
+          <div class="loading-members">
+            <mat-spinner diameter="32"></mat-spinner>
+          </div>
+        } @else if (expandedGroupId() === group.id && members().length === 0) {
+          <p class="empty-members">Nenhum membro neste grupo.</p>
+        } @else if (expandedGroupId() === group.id) {
+          <div class="members-grid">
+            @for (member of members(); track member.id) {
+              <mat-card appearance="outlined" class="member-card">
+                <mat-card-header>
+                  <div mat-card-avatar class="member-avatar">{{ getInitials(member.nome) }}</div>
+                  <mat-card-title class="member-name">{{ member.nome }}</mat-card-title>
+                  <mat-card-subtitle class="member-cpf">{{ fmtCpf(member.cpf) }}</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                  <div class="member-badges">
+                    <mat-chip>{{ member.origem }}</mat-chip>
+                    @if (member.dataDesligamento) {
+                      <mat-chip class="warn-chip">Deslig. {{ member.dataDesligamento }}</mat-chip>
+                    }
+                  </div>
+                </mat-card-content>
+                <mat-card-actions align="end">
+                  <button mat-icon-button color="warn" matTooltip="Remover membro"
+                    (click)="confirmRemoveMember(group.id, member)">
+                    <mat-icon>person_remove</mat-icon>
+                  </button>
+                </mat-card-actions>
+              </mat-card>
+            }
+          </div>
+        }
+      </mat-expansion-panel>
+    }
+  </mat-accordion>
+}
