@@ -1,0 +1,139 @@
+export type Orgao = 'TRE-MA' | 'TSE';
+export type Sistema = 'PJe1G' | 'PJe2G';
+export type Origem = 'INTERNO' | 'EXTERNO';
+export type VinculoCadastral = 'ATIVO' | 'INATIVO' | 'SEM_VINCULO';
+export type StatusConformidade =
+  | 'OK'
+  | 'ACESSO_INVALIDO'
+  | 'EXPIRADO'
+  | 'PROXIMO_EXPIRAR'
+  | 'SEM_EMAIL_INSTITUCIONAL'
+  | 'PERFIL_INCORRETO';
+
+export type Granularity = 'day' | 'week' | 'month' | 'year';
+
+export interface Usuario {
+  id: string;
+  nome: string;
+  matricula: string;
+  orgao: Orgao;
+  sistema: Sistema;
+  origem: Origem;
+  vinculo: VinculoCadastral;
+  conformidade: StatusConformidade[];
+  /** ISO date (yyyy-MM-dd) ou null quando o usuário nunca acessou */
+  ultimoAcesso: string | null;
+  emailInstitucional: boolean;
+}
+
+export interface DashboardFilters {
+  granularity: Granularity;
+  startDate: Date | null;
+  endDate: Date | null;
+  orgaos: Orgao[];
+  sistemas: Sistema[];
+  origens: Origem[];
+}
+
+export const EMPTY_FILTERS: DashboardFilters = {
+  granularity: 'day',
+  startDate: null,
+  endDate: null,
+  orgaos: [],
+  sistemas: [],
+  origens: [],
+};
+
+export type KpiTone = 'primary' | 'info' | 'warning' | 'danger' | 'success' | 'accent';
+
+export interface KpiCardData {
+  id: string;
+  title: string;
+  value: string;
+  /** Variação percentual vs período anterior. Positivo/negativo muda o ícone. */
+  deltaPct: number | null;
+  /** Série para a sparkline (8–12 pontos) */
+  sparkline: number[];
+  tone: KpiTone;
+  /** Texto secundário curto, ex.: "de 1.245 usuários" */
+  hint?: string;
+}
+
+export interface AccessSeriesPoint {
+  period: string;
+  count: number;
+}
+
+export interface AccessSeriesResponse {
+  sistema: Sistema;
+  data: AccessSeriesPoint[];
+  total: number;
+  peak: AccessSeriesPoint;
+  lowest: AccessSeriesPoint;
+}
+
+export interface HeatmapCell {
+  /** 0–23 */
+  hora: number;
+  /** 0 = domingo, 6 = sábado */
+  dia: number;
+  count: number;
+}
+
+export interface DistributionSlice {
+  label: string;
+  value: number;
+  color: string;
+}
+
+export interface LastAccessBucket {
+  key: '0-7' | '7-30' | '30-90' | '90+' | 'never';
+  label: string;
+  count: number;
+  highlight?: boolean;
+  color: string;
+}
+
+export interface ComplianceMetric {
+  key: string;
+  label: string;
+  value: number;
+  total: number;
+  color: string;
+}
+
+export interface OrgaoSistemaBucket {
+  orgao: Orgao;
+  sistema: Sistema;
+  count: number;
+}
+
+export const ORGAO_LABEL: Record<Orgao, string> = {
+  'TRE-MA': 'TRE-MA',
+  'TSE': 'TSE',
+};
+
+export const SISTEMA_LABEL: Record<Sistema, string> = {
+  PJe1G: 'PJe 1G',
+  PJe2G: 'PJe 2G',
+};
+
+export const ORIGEM_LABEL: Record<Origem, string> = {
+  INTERNO: 'Interno',
+  EXTERNO: 'Externo',
+};
+
+export const VINCULO_LABEL: Record<VinculoCadastral, string> = {
+  ATIVO: 'Ativo',
+  INATIVO: 'Inativo',
+  SEM_VINCULO: 'Sem vínculo',
+};
+
+export const CONFORMIDADE_LABEL: Record<StatusConformidade, string> = {
+  OK: 'Regular',
+  ACESSO_INVALIDO: 'Acesso inválido',
+  EXPIRADO: 'Acesso expirado',
+  PROXIMO_EXPIRAR: 'Próximo de expirar',
+  SEM_EMAIL_INSTITUCIONAL: 'Sem e-mail institucional',
+  PERFIL_INCORRETO: 'Perfil incorreto',
+};
