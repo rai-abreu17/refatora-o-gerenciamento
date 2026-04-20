@@ -1,0 +1,55 @@
+:host { display: block; }
+
+.dashboard-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 180px;
+}
+
+.filter-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.clear-btn {
+  height: 36px;
+  align-self: center;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    margin-right: 4px;
+  }
+}
+
+::ng-deep .dashboard-filters .mat-mdc-chip-option {
+  --mdc-chip-outline-color: var(--color-border);
+  --mdc-chip-label-text-color: var(--color-text-primary);
+}
+
+::ng-deep .dashboard-filters .mat-mdc-chip-option.mdc-evolution-chip--selected {
+  --mdc-chip-elevated-selected-container-color: #1B4F8A;
+  --mdc-chip-selected-label-text-color: #ffffff;
+  --mdc-chip-selected-leading-icon-color: #ffffff;
+}
+
+@media (max-width: 767.98px) {
+  .dashboard-filters { padding: var(--space-sm); gap: var(--space-sm); }
+  .filter-group { min-width: 100%; }
+}

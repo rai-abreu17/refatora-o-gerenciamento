@@ -1,0 +1,52 @@
+<div class="dashboard-filters" role="group" aria-label="Filtros globais do dashboard">
+  <div class="filter-group">
+    <span class="filter-label" id="filter-orgao">Órgão</span>
+    <mat-chip-listbox aria-labelledby="filter-orgao" multiple>
+      @for (o of orgaos; track o) {
+        <mat-chip-option
+          [selected]="isActive('orgao', o)"
+          (selectionChange)="toggle('orgao', o)">
+          {{ orgaoLabel[o] }}
+        </mat-chip-option>
+      }
+    </mat-chip-listbox>
+  </div>
+
+  <div class="filter-group">
+    <span class="filter-label" id="filter-sistema">Sistema</span>
+    <mat-chip-listbox aria-labelledby="filter-sistema" multiple>
+      @for (s of sistemas; track s) {
+        <mat-chip-option
+          [selected]="isActive('sistema', s)"
+          (selectionChange)="toggle('sistema', s)">
+          {{ sistemaLabel[s] }}
+        </mat-chip-option>
+      }
+    </mat-chip-listbox>
+  </div>
+
+  <div class="filter-group">
+    <span class="filter-label" id="filter-origem">Origem</span>
+    <mat-chip-listbox aria-labelledby="filter-origem" multiple>
+      @for (or of origens; track or) {
+        <mat-chip-option
+          [selected]="isActive('origem', or)"
+          (selectionChange)="toggle('origem', or)">
+          {{ origemLabel[or] }}
+        </mat-chip-option>
+      }
+    </mat-chip-listbox>
+  </div>
+
+  @if (hasActive()) {
+    <button
+      type="button"
+      mat-stroked-button
+      class="clear-btn"
+      (click)="clearAll()"
+      aria-label="Limpar filtros">
+      <mat-icon>close</mat-icon>
+      Limpar
+    </button>
+  }
+</div>
