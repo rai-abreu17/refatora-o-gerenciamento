@@ -1,0 +1,58 @@
+<section class="critical-card" aria-labelledby="critical-title">
+  <header class="critical-card__head">
+    <div>
+      <h3 id="critical-title" class="critical-card__title">Usuários críticos</h3>
+      <p class="critical-card__subtitle">
+        Top {{ users().length }} por risco de conformidade
+      </p>
+    </div>
+  </header>
+
+  <div class="table-wrap">
+    <table class="critical-table" aria-label="Usuários críticos">
+      <thead>
+        <tr>
+          <th scope="col">Usuário</th>
+          <th scope="col">Órgão</th>
+          <th scope="col">Sistema</th>
+          <th scope="col">Vínculo</th>
+          <th scope="col">Último acesso</th>
+          <th scope="col">Situação</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of rows(); track r.user.id) {
+          <tr>
+            <td>
+              <div class="user-cell">
+                <span class="user-cell__name">{{ r.user.nome }}</span>
+                <span class="user-cell__meta">{{ r.user.id }} · Mat. {{ r.user.matricula }}</span>
+              </div>
+            </td>
+            <td>{{ orgaoLabel[r.user.orgao] }}</td>
+            <td>{{ sistemaLabel[r.user.sistema] }}</td>
+            <td>
+              <span class="chip chip--{{ r.vinculoTone }}">{{ vinculoLabel[r.user.vinculo] }}</span>
+            </td>
+            <td [class.never-cell]="!r.user.ultimoAcesso">{{ r.ultimoAcessoFmt }}</td>
+            <td>
+              <div class="chip-list">
+                @for (b of r.conformidadeBadges; track b.label) {
+                  <span class="chip chip--{{ b.tone }}">{{ b.label }}</span>
+                }
+                @if (r.conformidadeBadges.length === 0) {
+                  <span class="chip chip--ok">Regular</span>
+                }
+              </div>
+            </td>
+          </tr>
+        }
+        @if (rows().length === 0) {
+          <tr>
+            <td colspan="6" class="empty-row">Nenhum usuário crítico encontrado para os filtros atuais.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

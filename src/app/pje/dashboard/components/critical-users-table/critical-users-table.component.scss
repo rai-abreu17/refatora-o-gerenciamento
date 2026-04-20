@@ -1,0 +1,115 @@
+:host { display: block; }
+
+.critical-card {
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: var(--space-lg);
+}
+
+.critical-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-md);
+}
+
+.critical-card__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.critical-card__subtitle {
+  margin: 4px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 0.82rem;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.critical-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.87rem;
+  min-width: 780px;
+}
+
+.critical-table thead th {
+  text-align: left;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--color-border);
+  background-color: transparent;
+}
+
+.critical-table tbody td {
+  padding: 12px;
+  border-bottom: 1px solid rgba(221, 225, 231, 0.5);
+  vertical-align: middle;
+}
+
+.critical-table tbody tr:hover {
+  background-color: rgba(27, 79, 138, 0.03);
+}
+
+.user-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-cell__name {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.user-cell__meta {
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.never-cell {
+  color: #6A1B9A;
+  font-weight: 600;
+}
+
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+.chip--ok     { background-color: #E8F5E9; color: #1B5E20; }
+.chip--danger { background-color: #FFEBEE; color: #B71C1C; }
+.chip--warning{ background-color: #FFF3E0; color: #BF360C; }
+.chip--accent { background-color: #F3E5F5; color: #4A148C; }
+.chip--gray   { background-color: #ECEFF1; color: #37474F; }
+
+.empty-row {
+  padding: var(--space-xl);
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 767.98px) {
+  .critical-card { padding: var(--space-md); }
+}
