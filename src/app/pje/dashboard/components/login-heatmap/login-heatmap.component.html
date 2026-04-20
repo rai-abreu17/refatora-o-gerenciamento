@@ -1,0 +1,41 @@
+<section class="heatmap-card" aria-labelledby="heatmap-title">
+  <header class="heatmap-card__head">
+    <div>
+      <h3 id="heatmap-title" class="heatmap-card__title">Logins por hora × dia da semana</h3>
+      <p class="heatmap-card__subtitle">Pico: {{ peakLabel() }}</p>
+    </div>
+    <div class="heatmap-legend" aria-hidden="true">
+      <span class="heatmap-legend__label">Menos</span>
+      <span class="heatmap-legend__step" [style.background]="cellColor(0)"></span>
+      <span class="heatmap-legend__step" [style.background]="cellColor(maxSample() * 0.25)"></span>
+      <span class="heatmap-legend__step" [style.background]="cellColor(maxSample() * 0.5)"></span>
+      <span class="heatmap-legend__step" [style.background]="cellColor(maxSample() * 0.75)"></span>
+      <span class="heatmap-legend__step" [style.background]="cellColor(maxSample())"></span>
+      <span class="heatmap-legend__label">Mais</span>
+    </div>
+  </header>
+
+  <div class="heatmap-grid-wrap" role="group" aria-label="Matriz de logins por hora e dia da semana">
+    <div class="heatmap-grid">
+      <span class="heatmap-grid__corner" aria-hidden="true"></span>
+      @for (h of horas; track h) {
+        <span class="heatmap-grid__hour" [class.heatmap-grid__hour--labeled]="showHourLabel(h)">
+          @if (showHourLabel(h)) { {{ h.toString().padStart(2, '0') }}h }
+        </span>
+      }
+
+      @for (d of diasLabel; track d; let dIdx = $index) {
+        <span class="heatmap-grid__day">{{ d }}</span>
+        @for (h of horas; track h) {
+          <span
+            class="heatmap-grid__cell"
+            [style.background]="cellColor(getCell(dIdx, h)?.count ?? 0)"
+            [attr.title]="cellTitle(dIdx, h)"
+            [attr.aria-label]="cellTitle(dIdx, h)"
+            tabindex="0">
+          </span>
+        }
+      }
+    </div>
+  </div>
+</section>
