@@ -1,0 +1,39 @@
+<section class="buckets-card" aria-labelledby="buckets-title">
+  <header class="buckets-card__head">
+    <h3 id="buckets-title" class="buckets-card__title">Último acesso dos usuários</h3>
+    <p class="buckets-card__subtitle">Distribuição por faixa de inatividade</p>
+  </header>
+
+  <div class="buckets-list" role="list">
+    @for (b of outras(); track b.key) {
+      <div class="bucket" role="listitem">
+        <div class="bucket__header">
+          <span class="bucket__label">{{ b.label }}</span>
+          <span class="bucket__count">
+            <strong>{{ b.count.toLocaleString('pt-BR') }}</strong>
+            <span class="bucket__pct">{{ percent(b.count).toLocaleString('pt-BR', { minimumFractionDigits: 1 }) }}%</span>
+          </span>
+        </div>
+        <div class="bucket__bar" [attr.aria-valuenow]="b.count" [attr.aria-valuemax]="total()" role="progressbar">
+          <span class="bucket__fill"
+                [style.width.%]="percent(b.count)"
+                [style.background-color]="b.color">
+          </span>
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (nunca(); as n) {
+    <div class="never-highlight" role="listitem">
+      <div class="never-highlight__left">
+        <span class="never-highlight__label">Nunca acessou</span>
+        <span class="never-highlight__sub">Usuários sem nenhum registro de acesso</span>
+      </div>
+      <div class="never-highlight__right">
+        <span class="never-highlight__value">{{ n.count.toLocaleString('pt-BR') }}</span>
+        <span class="never-highlight__pct">{{ percent(n.count).toLocaleString('pt-BR', { minimumFractionDigits: 1 }) }}% do total</span>
+      </div>
+    </div>
+  }
+</section>

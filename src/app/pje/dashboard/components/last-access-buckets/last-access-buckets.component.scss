@@ -1,0 +1,111 @@
+:host { display: block; height: 100%; }
+
+.buckets-card {
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: var(--space-lg);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.buckets-card__head { }
+
+.buckets-card__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.buckets-card__subtitle {
+  margin: 4px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 0.82rem;
+}
+
+.buckets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.bucket__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.85rem;
+  margin-bottom: 6px;
+}
+
+.bucket__label {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.bucket__count strong {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.bucket__pct {
+  margin-left: 6px;
+  color: var(--color-text-secondary);
+  font-size: 0.78rem;
+}
+
+.bucket__bar {
+  height: 8px;
+  background-color: var(--color-surface);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.bucket__fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.never-highlight {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-md);
+  background: linear-gradient(135deg, #6A1B9A 0%, #AB47BC 100%);
+  color: #fff;
+  border-radius: 10px;
+  padding: 14px 18px;
+  box-shadow: 0 4px 14px rgba(106, 27, 154, 0.2);
+}
+
+.never-highlight__left { display: flex; flex-direction: column; gap: 2px; }
+
+.never-highlight__label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.never-highlight__sub {
+  font-size: 0.78rem;
+  opacity: 0.85;
+}
+
+.never-highlight__right { text-align: right; display: flex; flex-direction: column; }
+
+.never-highlight__value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.never-highlight__pct {
+  font-size: 0.78rem;
+  opacity: 0.9;
+}
