@@ -1,0 +1,40 @@
+<section class="trend-card" aria-labelledby="trend-chart-title">
+  <header class="trend-card__head">
+    <div>
+      <h3 id="trend-chart-title" class="trend-card__title">Acessos ao PJe</h3>
+      <p class="trend-card__subtitle">
+        {{ totals().combined.toLocaleString('pt-BR') }} acessos no período
+        · PJe 1G {{ totals().total1G.toLocaleString('pt-BR') }} · PJe 2G {{ totals().total2G.toLocaleString('pt-BR') }}
+      </p>
+    </div>
+    <div class="trend-card__actions">
+      <mat-button-toggle-group
+        [value]="granularity()"
+        (change)="onGranularityChange($event.value)"
+        aria-label="Granularidade">
+        <mat-button-toggle value="day">Dia</mat-button-toggle>
+        <mat-button-toggle value="week">Semana</mat-button-toggle>
+        <mat-button-toggle value="month">Mês</mat-button-toggle>
+        <mat-button-toggle value="year">Ano</mat-button-toggle>
+      </mat-button-toggle-group>
+      <button
+        type="button"
+        mat-flat-button
+        color="primary"
+        class="export-btn"
+        (click)="exportCsv()"
+        aria-label="Exportar dados em CSV">
+        <mat-icon>download</mat-icon>
+        Exportar
+      </button>
+    </div>
+  </header>
+
+  <div class="trend-card__chart">
+    <canvas baseChart
+      [data]="chartData()"
+      [options]="chartOptions"
+      type="line">
+    </canvas>
+  </div>
+</section>

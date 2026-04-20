@@ -1,0 +1,62 @@
+:host { display: block; }
+
+.trend-card {
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: var(--space-lg);
+}
+
+.trend-card__head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  align-items: flex-start;
+  margin-bottom: var(--space-md);
+}
+
+.trend-card__title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.trend-card__subtitle {
+  margin: 4px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+}
+
+.trend-card__actions {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.export-btn {
+  height: 40px;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    margin-right: 4px;
+  }
+}
+
+.trend-card__chart {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 6;
+  min-height: 280px;
+}
+
+@media (max-width: 767.98px) {
+  .trend-card { padding: var(--space-md); }
+  .trend-card__chart { aspect-ratio: 4 / 3; }
+  .trend-card__actions { width: 100%; }
+  .trend-card__actions mat-button-toggle-group { flex: 1; }
+}
