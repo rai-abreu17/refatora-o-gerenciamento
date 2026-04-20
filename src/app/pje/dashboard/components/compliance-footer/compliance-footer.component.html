@@ -1,0 +1,27 @@
+<section class="compliance" aria-labelledby="compliance-title">
+  <h3 id="compliance-title" class="compliance__title">Conformidade global</h3>
+  <div class="compliance__grid">
+    @for (m of metrics(); track m.key) {
+      <div class="compliance__item">
+        <div class="compliance__header">
+          <span class="compliance__label">{{ m.label }}</span>
+          <span class="compliance__value">
+            <strong>{{ m.value.toLocaleString('pt-BR') }}</strong>
+            <span class="compliance__pct">{{ pctFmt(m) }}%</span>
+          </span>
+        </div>
+        <div class="compliance__bar"
+             role="progressbar"
+             [attr.aria-valuenow]="m.value"
+             [attr.aria-valuemin]="0"
+             [attr.aria-valuemax]="m.total"
+             [attr.aria-label]="m.label">
+          <span class="compliance__fill"
+                [style.width.%]="pct(m)"
+                [style.background-color]="m.color">
+          </span>
+        </div>
+      </div>
+    }
+  </div>
+</section>
