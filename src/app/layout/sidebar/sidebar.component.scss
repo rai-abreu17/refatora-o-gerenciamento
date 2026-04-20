@@ -1,3 +1,47 @@
+.btn-open-sidebar {
+  position: fixed;
+  top: 24px;
+  left: 12px;
+  z-index: 2000;
+  background: #0f3360;
+  border: 1px solid #b0bed9;
+  color: #b0bed9;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.btn-open-sidebar:hover {
+  background: #17396a;
+  color: #fff;
+  border-color: #fff;
+}
+.sidebar {
+  padding-top: 64px;
+}
+
+.btn-close-sidebar {
+  position: absolute;
+  top: 20px;
+  right: 16px;
+  z-index: 2;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+}
+
+.sidebar-header {
+  position: relative;
+  min-height: 48px;
+  /* border-bottom removida para tirar a linha abaixo do ícone */
+}
+
 .sidebar {
   position: fixed;
   top: 0;
@@ -27,7 +71,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 20px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  /* border-bottom removida para tirar a linha abaixo do ícone */
 }
 
 .sidebar-title {

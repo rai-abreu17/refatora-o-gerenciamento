@@ -20,6 +20,7 @@ interface MenuSection {
 export class SidebarComponent {
   isOpen = input<boolean>(false);
   closeSidebar = output<void>();
+  openSidebar = output<void>();
 
   expanded = signal<Record<string, boolean>>({
     pje: true,

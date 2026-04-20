@@ -17,7 +17,6 @@ import { ComplianceFooterComponent } from './components/compliance-footer/compli
   selector: 'app-dashboard',
   standalone: true,
   imports: [
-    PageHeaderComponent,
     DashboardFiltersComponent,
     KpiStatCardComponent,
     TrendChartComponent,

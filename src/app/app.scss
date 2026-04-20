@@ -1,3 +1,26 @@
+.app-content {
+  padding-top: 80px;
+}
+
+.app-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #e3edfa; /* azul-claro semelhante ao exemplo */
+  color: #0f3360;
+  text-align: right;
+  font-weight: 300;
+  font-size: 0.92rem;
+  padding: 0.5rem 2rem 0.5rem 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.app-footer p {
+  margin: 0;
+}
 .app-layout {
   display: flex;
   min-height: 100vh;
