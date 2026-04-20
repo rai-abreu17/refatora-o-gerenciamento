@@ -1,0 +1,22 @@
+<section class="dist-card" [attr.aria-labelledby]="'dist-title-' + title()">
+  <header class="dist-card__head">
+    <h3 class="dist-card__title" [id]="'dist-title-' + title()">{{ title() }}</h3>
+    @if (subtitle()) {
+      <p class="dist-card__subtitle">{{ subtitle() }}</p>
+    }
+  </header>
+  <div class="dist-card__chart"
+       [class.dist-card__chart--donut]="variant() === 'donut'">
+    <canvas baseChart
+      [data]="chartData()"
+      [options]="chartOptions()"
+      [type]="chartType()">
+    </canvas>
+    @if (variant() === 'donut' && total()) {
+      <div class="dist-card__total" aria-hidden="true">
+        <span class="dist-card__total-value">{{ total().toLocaleString('pt-BR') }}</span>
+        <span class="dist-card__total-label">total</span>
+      </div>
+    }
+  </div>
+</section>

@@ -1,0 +1,68 @@
+:host { display: block; height: 100%; }
+
+.dist-card {
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: var(--space-lg);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.dist-card__head {
+  margin-bottom: var(--space-sm);
+}
+
+.dist-card__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.dist-card__subtitle {
+  margin: 4px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 0.82rem;
+}
+
+.dist-card__chart {
+  position: relative;
+  flex: 1;
+  min-height: 220px;
+}
+
+.dist-card__chart--donut {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dist-card__total {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  transform: translateY(-14%);
+}
+
+.dist-card__total-value {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.dist-card__total-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 767.98px) {
+  .dist-card { padding: var(--space-md); }
+  .dist-card__chart { min-height: 240px; }
+}
