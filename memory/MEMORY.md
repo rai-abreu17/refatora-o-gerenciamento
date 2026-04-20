@@ -1,0 +1,1 @@
+- [Projeto Gerenciamento PJe](project_gerenciamento_pje.md) — sistema Angular 21 de gestão de usuários do PJe; stack, paleta, módulos e convenção do dashboard
