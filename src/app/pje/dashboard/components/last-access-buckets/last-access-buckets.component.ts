@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { LastAccessBucket } from '../../dashboard.model';
 import { InfoTooltipComponent } from '../../../../shared/components/info-tooltip/info-tooltip.component';
 
@@ -11,6 +11,7 @@ import { InfoTooltipComponent } from '../../../../shared/components/info-tooltip
 })
 export class LastAccessBucketsComponent {
   buckets = input.required<LastAccessBucket[]>();
+  bucketClick = output<LastAccessBucket>();
 
   total = computed(() => this.buckets().reduce((s, b) => s + b.count, 0));
 
@@ -22,4 +23,8 @@ export class LastAccessBucketsComponent {
 
   nunca = computed(() => this.buckets().find((b) => b.key === 'never'));
   outras = computed(() => this.buckets().filter((b) => b.key !== 'never'));
+
+  onBucketClick(bucket: LastAccessBucket): void {
+    this.bucketClick.emit(bucket);
+  }
 }

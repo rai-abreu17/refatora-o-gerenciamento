@@ -35,7 +35,11 @@
             [style.background]="cellColor(getCell(dIdx, h)?.count ?? 0)"
             [attr.title]="cellTitle(dIdx, h)"
             [attr.aria-label]="cellTitle(dIdx, h)"
-            tabindex="0">
+            tabindex="0"
+            role="button"
+            (click)="onCellClick(dIdx, h)"
+            (keydown.enter)="onCellClick(dIdx, h)"
+            (keydown.space)="onCellClick(dIdx, h); $event.preventDefault()">
           </span>
         }
       }

@@ -209,11 +209,31 @@ export class DashboardService {
       const conformidade: StatusConformidade[] = [];
       const emailInstitucional = rng() > 0.07;
       if (!emailInstitucional) conformidade.push('SEM_EMAIL_INSTITUCIONAL');
+      
+      const emailBase = nome.toLowerCase().split(' ').join('.') + '@';
+      const emailPje = emailInstitucional ? emailBase + (orgao === 'TRE-MA' ? 'tre-ma.jus.br' : 'tse.jus.br') : (rng() > 0.5 ? emailBase + 'gmail.com' : emailBase + 'hotmail.com');
+      const emailTre = emailInstitucional ? emailBase + (orgao === 'TRE-MA' ? 'tre-ma.jus.br' : 'tse.jus.br') : '';
       if (vinculo === 'INATIVO' && !nunca && rng() < 0.6) conformidade.push('ACESSO_INVALIDO');
       if (vinculo === 'SEM_VINCULO' && rng() < 0.7) conformidade.push('ACESSO_INVALIDO');
       if (rng() < 0.09) conformidade.push('EXPIRADO');
       if (rng() < 0.12) conformidade.push('PROXIMO_EXPIRAR');
-      if (rng() < 0.08) conformidade.push('PERFIL_INCORRETO');
+      
+      let motivoPerfilIncorreto: string | undefined = undefined;
+      if (origem === 'INTERNO' && rng() < 0.15) {
+        conformidade.push('PERFIL_INCORRETO');
+        if (rng() > 0.5) {
+          const zonas = ['01ª', '10ª', '20ª', '35ª', '87ª'];
+          const zonaAntiga = pick(rng, zonas.map(v => ({v, w:1})));
+          const zonaNova = pick(rng, zonas.filter(z => z !== zonaAntiga).map(v => ({v, w:1})));
+          motivoPerfilIncorreto = `Divergência de lotação: Usuário possui perfil da ${zonaAntiga} ZONA cadastrado no PJe, porém a lotação atual no RH do TRE-MA é ${zonaNova} ZONA. Acesso antigo deve ser revogado.`;
+        } else {
+          const mutiroes = ['Mutirão Eleições 2024', 'Força-tarefa Biometria', 'Grupo de Apoio Metas CNJ'];
+          const mutirao = pick(rng, mutiroes.map(v => ({v, w:1})));
+          const papel = pick(rng, [{v: 'Assessor-chefe', w:1}, {v: 'Avaliador', w:1}, {v: 'Coordenador', w:1}]);
+          motivoPerfilIncorreto = `Privilégio expirado: Usuário mantém perfil de "${papel}" vinculado ao grupo de trabalho "${mutirao}", que foi encerrado oficialmente há mais de 3 meses.`;
+        }
+      }
+      
       if (conformidade.length === 0) conformidade.push('OK');
 
       lista.push({
@@ -229,6 +249,9 @@ export class DashboardService {
         conformidade,
         ultimoAcesso,
         emailInstitucional,
+        emailPje,
+        emailTre,
+        motivoPerfilIncorreto,
       });
     }
 

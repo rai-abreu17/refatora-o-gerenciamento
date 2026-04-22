@@ -216,6 +216,86 @@
   min-width: 780px;
 }
 
+.btn-expand {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #1B4F8A;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.btn-expand:hover {
+  background-color: rgba(27, 79, 138, 0.1);
+}
+
+.btn-expand svg {
+  width: 18px;
+  height: 18px;
+}
+
+.critical-table tbody tr {
+  border-bottom: 1px solid #eaeaea;
+  transition: background-color 0.2s;
+}
+
+.critical-table tbody tr:hover,
+.critical-table tbody tr.is-expanded {
+  background-color: #fafafa;
+}
+
+.critical-table tbody tr.is-expanded {
+  border-bottom: none;
+}
+
+.critical-table td {
+  padding: 16px 8px;
+  vertical-align: middle;
+}
+
+.expanded-row td {
+  background-color: #fafafa;
+  border-bottom: 1px solid #eaeaea;
+  padding: 0 16px 16px 16px;
+}
+
+.expanded-content {
+  display: flex;
+  gap: 32px;
+  padding: 12px 16px;
+  background-color: white;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.detail-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.detail-value {
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.detail-value.text-danger {
+  color: #d65e52;
+  font-style: italic;
+}
+
 .critical-table thead th {
   text-align: left;
   font-size: 0.72rem;

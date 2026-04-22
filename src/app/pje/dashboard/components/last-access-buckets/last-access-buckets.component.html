@@ -9,7 +9,7 @@
 
   <div class="buckets-list" role="list">
     @for (b of outras(); track b.key) {
-      <div class="bucket" role="listitem">
+      <div class="bucket bucket--clickable" role="listitem" tabindex="0" (click)="onBucketClick(b)" (keydown.enter)="onBucketClick(b)">
         <div class="bucket__header">
           <span class="bucket__label">{{ b.label }}</span>
           <span class="bucket__count">
@@ -28,7 +28,7 @@
   </div>
 
   @if (nunca(); as n) {
-    <div class="never-highlight" role="listitem">
+    <div class="never-highlight never-highlight--clickable" role="listitem" tabindex="0" (click)="onBucketClick(n)" (keydown.enter)="onBucketClick(n)">
       <div class="never-highlight__left">
         <span class="never-highlight__label">Nunca acessou</span>
         <span class="never-highlight__sub">Usuários sem nenhum registro de acesso</span>

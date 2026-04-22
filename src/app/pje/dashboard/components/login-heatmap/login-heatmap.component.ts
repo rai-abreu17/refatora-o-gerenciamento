@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { HeatmapCell } from '../../dashboard.model';
 import { InfoTooltipComponent } from '../../../../shared/components/info-tooltip/info-tooltip.component';
 
@@ -14,6 +14,7 @@ const HORAS = Array.from({ length: 24 }, (_, i) => i);
 })
 export class LoginHeatmapComponent {
   cells = input.required<HeatmapCell[]>();
+  cellClick = output<{dia: number, hora: number, count: number}>();
 
   readonly diasLabel = DIA_LABEL;
   readonly horas = HORAS;
@@ -62,6 +63,13 @@ export class LoginHeatmapComponent {
     const c = this.getCell(dia, hora);
     const count = c?.count ?? 0;
     return `${this.diasLabel[dia]} · ${hora.toString().padStart(2, '0')}h: ${count.toLocaleString('pt-BR')} logins`;
+  }
+
+  onCellClick(dia: number, hora: number): void {
+    const c = this.getCell(dia, hora);
+    if (c && c.count > 0) {
+      this.cellClick.emit({dia, hora, count: c.count});
+    }
   }
 
   showHourLabel(h: number): boolean {

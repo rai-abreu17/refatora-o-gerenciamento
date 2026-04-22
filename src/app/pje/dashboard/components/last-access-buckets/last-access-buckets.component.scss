@@ -109,3 +109,34 @@
   font-size: 0.78rem;
   opacity: 0.9;
 }
+
+/* Efeitos interativos de clique */
+.bucket--clickable {
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 6px 8px;
+  margin: -6px -8px;
+  transition: background-color 0.15s ease;
+}
+
+.bucket--clickable:hover,
+.bucket--clickable:focus-visible {
+  background-color: rgba(27, 79, 138, 0.05);
+  outline: none;
+}
+
+.never-highlight--clickable {
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.never-highlight--clickable:hover,
+.never-highlight--clickable:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(106, 27, 154, 0.4);
+  outline: none;
+}
+
+@media (max-width: 767.98px) {
+  .buckets-card { padding: var(--space-md); }
+}

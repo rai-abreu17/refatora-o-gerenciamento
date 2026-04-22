@@ -83,11 +83,10 @@ const TONE_BG: Record<KpiTone, string> = {
     .kpi__head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
     .kpi__head-right { display: flex; align-items: center; gap: 6px; }
     .kpi__title {
-      font-size: 0.78rem;
+      font-size: 0.85rem;
       font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      opacity: 0.92;
+      letter-spacing: 0.02em;
+      opacity: 0.95;
     }
     .kpi__delta {
       font-size: 0.72rem;

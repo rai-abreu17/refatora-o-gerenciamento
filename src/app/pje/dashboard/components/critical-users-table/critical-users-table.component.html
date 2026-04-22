@@ -67,6 +67,53 @@
             </div>
 
             <div class="filter-section">
+              <h4>Perfil</h4>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterPerfil().includes('MAGISTRADO')" (change)="toggleFilterSelection('perfil', 'MAGISTRADO')">
+                <span class="checkmark"></span> <span class="checkbox-text">Magistrado</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterPerfil().includes('SERVIDOR')" (change)="toggleFilterSelection('perfil', 'SERVIDOR')">
+                <span class="checkmark"></span> <span class="checkbox-text">Servidor</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterPerfil().includes('ADVOGADO')" (change)="toggleFilterSelection('perfil', 'ADVOGADO')">
+                <span class="checkmark"></span> <span class="checkbox-text">Advogado</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterPerfil().includes('PROCURADOR')" (change)="toggleFilterSelection('perfil', 'PROCURADOR')">
+                <span class="checkmark"></span> <span class="checkbox-text">Procurador</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterPerfil().includes('ESTAGIARIO')" (change)="toggleFilterSelection('perfil', 'ESTAGIARIO')">
+                <span class="checkmark"></span> <span class="checkbox-text">Estagiário</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterPerfil().includes('PERITO')" (change)="toggleFilterSelection('perfil', 'PERITO')">
+                <span class="checkmark"></span> <span class="checkbox-text">Perito</span>
+              </label>
+            </div>
+            
+            <div class="filter-section">
+              <h4>Setor / Lotação</h4>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterSetor().includes('SECRETARIA_JUDICIARIA')" (change)="toggleFilterSelection('setor', 'SECRETARIA_JUDICIARIA')">
+                <span class="checkmark"></span> <span class="checkbox-text">Secretaria Judiciária</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterSetor().includes('CARTORIO_ELEITORAL')" (change)="toggleFilterSelection('setor', 'CARTORIO_ELEITORAL')">
+                <span class="checkmark"></span> <span class="checkbox-text">Cartório Eleitoral</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterSetor().includes('SECRETARIA_TI')" (change)="toggleFilterSelection('setor', 'SECRETARIA_TI')">
+                <span class="checkmark"></span> <span class="checkbox-text">Sec. de Tecnologia</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterSetor().includes('CORREGEDORIA')" (change)="toggleFilterSelection('setor', 'CORREGEDORIA')">
+                <span class="checkmark"></span> <span class="checkbox-text">Corregedoria</span>
+              </label>
+            </div>
+            <div class="filter-section">
               <h4>Situação</h4>
               <label class="checkbox-label">
                 <input type="checkbox" [checked]="filterSituacao().includes('ACESSO_INVALIDO')" (change)="toggleFilterSelection('situacao', 'ACESSO_INVALIDO')">
@@ -98,17 +145,38 @@
     <table class="critical-table" aria-label="Usuários críticos">
       <thead>
         <tr>
+          @if (allowExpand()) {
+            <th scope="col" style="width: 48px"></th>
+          }
           <th scope="col">Usuário</th>
           <th scope="col">Órgão</th>
           <th scope="col">Sistema</th>
           <th scope="col">Vínculo</th>
+          <th scope="col">Perfil</th>
+          <th scope="col">Setor / Lotação</th>
           <th scope="col">Último acesso</th>
           <th scope="col">Situação</th>
         </tr>
       </thead>
       <tbody>
         @for (r of rows(); track r.user.id) {
-          <tr>
+          <tr [class.is-expanded]="expandedRows().has(r.user.id)">
+            @if (allowExpand()) {
+              <td>
+                <button class="btn-expand" (click)="toggleExpand(r.user.id)" aria-label="Expandir detalhes">
+                  @if (expandedRows().has(r.user.id)) {
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                  } @else {
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="12" y1="5" x2="12" y2="19"></line>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                  }
+                </button>
+              </td>
+            }
             <td>
               <div class="user-cell">
                 <span class="user-cell__name">{{ r.user.nome }}</span>
@@ -120,6 +188,8 @@
             <td>
               <span class="chip chip--{{ r.vinculoTone }}">{{ vinculoLabel[r.user.vinculo] }}</span>
             </td>
+            <td>{{ perfilLabel[r.user.perfil] }}</td>
+            <td>{{ localizacaoLabel[r.user.localizacao] }}</td>
             <td [class.never-cell]="!r.user.ultimoAcesso">{{ r.ultimoAcessoFmt }}</td>
             <td>
               <div class="chip-list">
@@ -132,10 +202,41 @@
               </div>
             </td>
           </tr>
+          @if (allowExpand() && expandedRows().has(r.user.id)) {
+            <tr class="expanded-row">
+              <td></td>
+              <td colspan="9">
+                <div class="expanded-content">
+                  @if (modalType() === 'semEmail') {
+                    <div class="detail-group">
+                      <span class="detail-label">E-mail no PJe:</span>
+                      <span class="detail-value" [class.text-danger]="!r.user.emailPje">{{ r.user.emailPje || 'Não cadastrado' }}</span>
+                    </div>
+                    <div class="detail-group">
+                      <span class="detail-label">E-mail no TRE-MA:</span>
+                      <span class="detail-value" [class.text-danger]="!r.user.emailTre">{{ r.user.emailTre || 'Não cadastrado' }}</span>
+                    </div>
+                  } @else if (modalType() === 'perfil-incorreto') {
+                    <div class="detail-group" style="width: 100%">
+                      <span class="detail-label">Detalhes da Inconsistência de Perfil:</span>
+                      <span class="detail-value" style="color: #d65e52; display: flex; align-items: center; gap: 6px; margin-top: 4px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; flex-shrink: 0;">
+                          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                          <line x1="12" y1="9" x2="12" y2="13"></line>
+                          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        {{ r.user.motivoPerfilIncorreto || 'Divergência não especificada.' }}
+                      </span>
+                    </div>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
         }
         @if (rows().length === 0) {
           <tr>
-            <td colspan="6" class="empty-row">Nenhum usuário encontrado na pesquisa.</td>
+            <td colspan="9" class="empty-row">Nenhum usuário encontrado na pesquisa.</td>
           </tr>
         }
       </tbody>

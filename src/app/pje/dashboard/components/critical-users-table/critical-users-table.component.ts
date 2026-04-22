@@ -1,7 +1,9 @@
 import { Component, computed, input, signal } from '@angular/core';
 import {
   CONFORMIDADE_LABEL,
+  LOCALIZACAO_LABEL,
   ORGAO_LABEL,
+  PERFIL_LABEL,
   SISTEMA_LABEL,
   StatusConformidade,
   Usuario,
@@ -23,10 +25,14 @@ interface Row {
 })
 export class CriticalUsersTableComponent {
   users = input.required<Usuario[]>();
+  allowExpand = input<boolean>(false);
+  modalType = input<string>('');
 
   readonly orgaoLabel = ORGAO_LABEL;
   readonly sistemaLabel = SISTEMA_LABEL;
   readonly vinculoLabel = VINCULO_LABEL;
+  readonly perfilLabel = PERFIL_LABEL;
+  readonly localizacaoLabel = LOCALIZACAO_LABEL;
 
   searchTerm = signal<string>('');
   
@@ -35,12 +41,14 @@ export class CriticalUsersTableComponent {
   filterSistema = signal<string[]>([]);
   filterVinculo = signal<string[]>([]);
   filterSituacao = signal<string[]>([]);
+  filterPerfil = signal<string[]>([]);
+  filterSetor = signal<string[]>([]);
 
   toggleFilters(): void {
     this.showFilters.set(!this.showFilters());
   }
 
-  toggleFilterSelection(group: 'orgao' | 'sistema' | 'vinculo' | 'situacao', value: string): void {
+  toggleFilterSelection(group: 'orgao' | 'sistema' | 'vinculo' | 'situacao' | 'perfil' | 'setor', value: string): void {
     if (group === 'orgao') {
       this.filterOrgao.update(v => v.includes(value) ? v.filter(x => x !== value) : [...v, value]);
     } else if (group === 'sistema') {
@@ -49,6 +57,10 @@ export class CriticalUsersTableComponent {
       this.filterVinculo.update(v => v.includes(value) ? v.filter(x => x !== value) : [...v, value]);
     } else if (group === 'situacao') {
       this.filterSituacao.update(v => v.includes(value) ? v.filter(x => x !== value) : [...v, value]);
+    } else if (group === 'perfil') {
+      this.filterPerfil.update(v => v.includes(value) ? v.filter(x => x !== value) : [...v, value]);
+    } else if (group === 'setor') {
+      this.filterSetor.update(v => v.includes(value) ? v.filter(x => x !== value) : [...v, value]);
     }
   }
 
@@ -63,14 +75,18 @@ export class CriticalUsersTableComponent {
     const sistema = this.filterSistema();
     const vinculo = this.filterVinculo();
     const situacao = this.filterSituacao();
+    const perfil = this.filterPerfil();
+    const setor = this.filterSetor();
 
     let list = this.users();
 
     if (orgao.length) list = list.filter(u => orgao.includes(u.orgao));
     if (sistema.length) list = list.filter(u => sistema.includes(u.sistema));
     if (vinculo.length) list = list.filter(u => vinculo.includes(u.vinculo));
+    if (perfil.length) list = list.filter(u => perfil.includes(u.perfil));
+    if (setor.length) list = list.filter(u => setor.includes(u.localizacao));
     
-    if (situacao.length) {
+    if (this.modalType() !== 'semEmail' && this.modalType() !== 'perfil-incorreto' && situacao.length) {
       // O usuário deve ter apenas situações que estejam selecionadas no filtro
       list = list.filter(u => u.conformidade.every(c => situacao.includes(c)));
     }
@@ -95,7 +111,7 @@ export class CriticalUsersTableComponent {
       conformidadeBadges: u.conformidade
         .filter((c) => c !== 'OK')
         .map((c) => ({ label: CONFORMIDADE_LABEL[c], tone: this.conformidadeTone(c) })),
-      vinculoTone:
+       vinculoTone:
         u.vinculo === 'ATIVO'
           ? 'ok'
           : u.vinculo === 'INATIVO'
@@ -103,6 +119,15 @@ export class CriticalUsersTableComponent {
             : 'gray',
     })),
   );
+
+  expandedRows = signal<Set<string>>(new Set());
+
+  toggleExpand(id: string): void {
+    const s = new Set(this.expandedRows());
+    if (s.has(id)) s.delete(id);
+    else s.add(id);
+    this.expandedRows.set(s);
+  }
 
   private formatUltimoAcesso(iso: string | null): string {
     if (!iso) return 'Nunca';

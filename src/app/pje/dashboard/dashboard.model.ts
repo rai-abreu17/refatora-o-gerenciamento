@@ -46,6 +46,10 @@ export interface Usuario {
   /** ISO date (yyyy-MM-dd) ou null quando o usuário nunca acessou */
   ultimoAcesso: string | null;
   emailInstitucional: boolean;
+  emailPje?: string;
+  emailTre?: string;
+  /** Motivo descritivo para quando o perfil está incorreto */
+  motivoPerfilIncorreto?: string;
 }
 
 export interface DashboardFilters {

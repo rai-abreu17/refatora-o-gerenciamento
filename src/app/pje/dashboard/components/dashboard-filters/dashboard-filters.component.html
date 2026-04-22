@@ -43,12 +43,29 @@
     <mat-form-field appearance="outline" subscriptSizing="dynamic" class="select-field">
       <mat-select
         multiple
+        panelClass="custom-select-panel"
         aria-labelledby="filter-perfil"
         placeholder="Todos os perfis"
         [value]="filters().perfis"
         (selectionChange)="onMultiSelectChange('perfil', $event.value)">
-        @for (p of perfis; track p) {
+        <div class="search-box-container" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+          <mat-icon class="search-icon">search</mat-icon>
+          <input type="text" class="search-input" placeholder="Pesquisar perfil..." (input)="onSearchPerfil($event)">
+        </div>
+        
+        @if ('todos os perfis'.includes(searchPerfil().toLowerCase())) {
+          <mat-option value="ALL" class="option-all" [class.is-all-active]="filters().perfis.length === 0">
+            <span [class.text-primary]="filters().perfis.length === 0">
+              Todos os perfis
+            </span>
+          </mat-option>
+        }
+
+        @for (p of filteredPerfis(); track p) {
           <mat-option [value]="p">{{ perfilLabel[p] }}</mat-option>
+        }
+        @if (filteredPerfis().length === 0) {
+          <div class="no-results">Nenhum perfil encontrado</div>
         }
       </mat-select>
     </mat-form-field>
@@ -59,12 +76,29 @@
     <mat-form-field appearance="outline" subscriptSizing="dynamic" class="select-field">
       <mat-select
         multiple
+        panelClass="custom-select-panel"
         aria-labelledby="filter-localizacao"
         placeholder="Todas as unidades"
         [value]="filters().localizacoes"
         (selectionChange)="onMultiSelectChange('localizacao', $event.value)">
-        @for (l of localizacoes; track l) {
+        <div class="search-box-container" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+          <mat-icon class="search-icon">search</mat-icon>
+          <input type="text" class="search-input" placeholder="Pesquisar unidade..." (input)="onSearchLocalizacao($event)">
+        </div>
+
+        @if ('todas as unidades'.includes(searchLocalizacao().toLowerCase())) {
+          <mat-option value="ALL" class="option-all" [class.is-all-active]="filters().localizacoes.length === 0">
+            <span [class.text-primary]="filters().localizacoes.length === 0">
+              Todas as unidades
+            </span>
+          </mat-option>
+        }
+
+        @for (l of filteredLocalizacoes(); track l) {
           <mat-option [value]="l">{{ localizacaoLabel[l] }}</mat-option>
+        }
+        @if (filteredLocalizacoes().length === 0) {
+          <div class="no-results">Nenhuma unidade encontrada</div>
         }
       </mat-select>
     </mat-form-field>

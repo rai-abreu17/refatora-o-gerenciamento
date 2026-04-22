@@ -1,4 +1,4 @@
-import { Component, input, output, computed } from '@angular/core';
+import { Component, input, output, computed, signal } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -65,6 +65,31 @@ export class DashboardFiltersComponent {
   perfilLabel = PERFIL_LABEL;
   localizacaoLabel = LOCALIZACAO_LABEL;
 
+  searchPerfil = signal<string>('');
+  searchLocalizacao = signal<string>('');
+
+  filteredPerfis = computed(() => {
+    const term = this.searchPerfil().toLowerCase();
+    if (!term) return this.perfis;
+    return this.perfis.filter(p => this.perfilLabel[p].toLowerCase().includes(term));
+  });
+
+  filteredLocalizacoes = computed(() => {
+    const term = this.searchLocalizacao().toLowerCase();
+    if (!term) return this.localizacoes;
+    return this.localizacoes.filter(l => this.localizacaoLabel[l].toLowerCase().includes(term));
+  });
+
+  onSearchPerfil(event: Event): void {
+    const el = event.target as HTMLInputElement;
+    this.searchPerfil.set(el.value);
+  }
+
+  onSearchLocalizacao(event: Event): void {
+    const el = event.target as HTMLInputElement;
+    this.searchLocalizacao.set(el.value);
+  }
+
   hasActive = computed(() => {
     const f = this.filters();
     return (
@@ -109,6 +134,12 @@ export class DashboardFiltersComponent {
 
   onMultiSelectChange(kind: FilterKind, values: string[]): void {
     const key = this.keyOf(kind);
+    
+    // Se o usuário clicou na opção especial "ALL", limpamos a seleção (o que equivale a "Todos")
+    if (values.includes('ALL')) {
+      values = [];
+    }
+    
     this.filtersChange.emit({ ...this.filters(), [key]: values } as DashboardFilters);
   }
 

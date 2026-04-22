@@ -190,6 +190,38 @@
   color: #1a1a1a;
 }
 
+.modal-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.export-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #f1f3f4;
+  color: #1B4F8A;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    background-color: #eaf2fb;
+    border-color: #1B4F8A;
+  }
+}
+
 .modal-body {
   padding: 20px 24px;
   overflow-y: auto;

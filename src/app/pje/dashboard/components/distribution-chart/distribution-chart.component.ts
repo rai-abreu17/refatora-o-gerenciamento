@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
 import { InfoTooltipComponent } from '../../../../shared/components/info-tooltip/info-tooltip.component';
 import {
@@ -40,6 +40,8 @@ export class DistributionChartComponent {
   series = input<GroupedSeries[]>([]);
   subtitle = input<string>('');
   infoText = input<string>('');
+
+  sliceClick = output<DistributionSlice>();
 
   total = computed(() => this.slices().reduce((s, x) => s + x.value, 0));
 
@@ -112,6 +114,22 @@ export class DistributionChartComponent {
             },
           },
         },
+      },
+      onHover: (event: any, elements: any[]) => {
+        const target = event.native?.target as HTMLElement;
+        if (target) {
+          target.style.cursor = elements.length ? 'pointer' : 'default';
+        }
+      },
+      onClick: (event: any, elements: any[]) => {
+        if (!elements.length) return;
+        const index = elements[0].index;
+        
+        const v = this.variant();
+        if (v === 'donut' || v === 'hbar') {
+          const slice = this.slices()[index];
+          if (slice) this.sliceClick.emit(slice);
+        }
       },
     } satisfies ChartConfiguration<'doughnut' | 'bar'>['options'];
 

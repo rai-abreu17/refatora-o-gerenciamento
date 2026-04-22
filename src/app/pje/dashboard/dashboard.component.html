@@ -38,14 +38,21 @@
           [subtitle]="'Ativo · Inativo · Sem vínculo'"
           [variant]="'donut'"
           [slices]="snap.vinculoDistribution"
+          (sliceClick)="onVinculoSliceClick($event)"
           infoText="Classifica os usuários pelo tipo de vínculo com o tribunal: Ativo (acesso autorizado e vigente), Inativo (vínculo encerrado) e Sem vínculo (sem cadastro formal). Altos índices de Inativo ou Sem vínculo indicam necessidade de revisão cadastral.">
         </app-distribution-chart>
       </div>
     </div>
 
     <div class="activity-row">
-      <app-login-heatmap [cells]="snap.heatmap"></app-login-heatmap>
-      <app-last-access-buckets [buckets]="snap.lastAccessBuckets"></app-last-access-buckets>
+      <app-login-heatmap 
+        [cells]="snap.heatmap"
+        (cellClick)="onHeatmapCellClick($event)">
+      </app-login-heatmap>
+      <app-last-access-buckets 
+        [buckets]="snap.lastAccessBuckets"
+        (bucketClick)="onBucketClick($event)">
+      </app-last-access-buckets>
     </div>
 
     <div class="analytic-grid">
@@ -55,6 +62,7 @@
           [subtitle]="'Interno × Externo'"
           [variant]="'hbar'"
           [slices]="snap.origemDistribution"
+          (sliceClick)="onOrigemSliceClick($event)"
           infoText="Separa os usuários entre Internos (servidores, magistrados e estagiários do tribunal) e Externos (advogados, peritos e procuradores). Permite avaliar a proporção de usuários externos com acesso ao sistema.">
         </app-distribution-chart>
       </div>
@@ -74,6 +82,7 @@
           [subtitle]="'Distribuição por papel no PJe'"
           [variant]="'donut'"
           [slices]="snap.perfilDistribution"
+          (sliceClick)="onPerfilSliceClick($event)"
           infoText="Exibe a proporção de cada perfil funcional cadastrado no PJe: Servidor, Advogado, Magistrado, Procurador, Estagiário e Perito. Auxilia na identificação de concentrações atípicas de perfis que podem exigir revisão.">
         </app-distribution-chart>
       </div>
@@ -93,12 +102,19 @@
             <h2>{{ data.title }}</h2>
             <p>{{ data.subtitle }}</p>
           </div>
-          <button class="modal-close" (click)="closeModal()" aria-label="Fechar modal">×</button>
+          <div class="modal-header__actions">
+            <button class="export-btn" (click)="exportToCsv()">
+              <mat-icon>download</mat-icon> Baixar CSV
+            </button>
+            <button class="modal-close" (click)="closeModal()" aria-label="Fechar modal">×</button>
+          </div>
         </header>
         <div class="modal-body">
           @if (data.users.length > 0) {
             <app-critical-users-table 
-              [users]="data.users">
+              [users]="data.users"
+              [allowExpand]="data.type === 'semEmail' || data.type === 'perfil-incorreto'"
+              [modalType]="data.type">
             </app-critical-users-table>
           } @else {
             <p class="modal-empty">Nenhum usuário encontrado para este indicador.</p>
