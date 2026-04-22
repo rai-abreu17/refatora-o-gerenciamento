@@ -1,7 +1,3 @@
-  // ...existing code...
-    openSidebar(): void {
-      this.sidebarOpen.set(true);
-    }
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
@@ -26,6 +22,7 @@ export class AppComponent {
   closeSidebar(): void {
     this.sidebarOpen.set(false);
   }
+
   // Handler para o evento de logout do header
   logoutHandler(): void {
     // Implemente aqui a lógica de logout, por exemplo:

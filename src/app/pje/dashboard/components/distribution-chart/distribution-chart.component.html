@@ -1,6 +1,11 @@
 <section class="dist-card" [attr.aria-labelledby]="'dist-title-' + title()">
   <header class="dist-card__head">
-    <h3 class="dist-card__title" [id]="'dist-title-' + title()">{{ title() }}</h3>
+    <h3 class="dist-card__title" [id]="'dist-title-' + title()">
+      {{ title() }}
+      @if (infoText()) {
+        <app-info-tooltip [text]="infoText()"></app-info-tooltip>
+      }
+    </h3>
     @if (subtitle()) {
       <p class="dist-card__subtitle">{{ subtitle() }}</p>
     }

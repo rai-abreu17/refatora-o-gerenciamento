@@ -1,13 +1,99 @@
-<section class="critical-card" aria-labelledby="critical-title">
-  <header class="critical-card__head">
-    <div>
-      <h3 id="critical-title" class="critical-card__title">Usuários críticos</h3>
-      <p class="critical-card__subtitle">
-        Top {{ users().length }} por risco de conformidade
-      </p>
-    </div>
-  </header>
+<section class="critical-card">
+  <div class="table-toolbar">
+    <div class="toolbar-left">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input 
+          type="text" 
+          class="search-input" 
+          placeholder="Buscar por nome, matrícula, órgão..." 
+          [value]="searchTerm()"
+          (input)="onSearch($event)"
+          aria-label="Buscar usuários"
+        />
+      </div>
+      
+      <div class="filter-wrapper">
+        <button class="btn-filter" (click)="toggleFilters()" [class.active]="showFilters()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+          </svg>
+          Filtros
+        </button>
 
+        @if (showFilters()) {
+          <div class="filter-popover">
+            <div class="filter-section">
+              <h4>Órgão</h4>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterOrgao().includes('TRE-MA')" (change)="toggleFilterSelection('orgao', 'TRE-MA')">
+                <span class="checkmark"></span> <span class="checkbox-text">TRE-MA</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterOrgao().includes('TSE')" (change)="toggleFilterSelection('orgao', 'TSE')">
+                <span class="checkmark"></span> <span class="checkbox-text">TSE</span>
+              </label>
+            </div>
+
+            <div class="filter-section">
+              <h4>Sistema</h4>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterSistema().includes('PJe1G')" (change)="toggleFilterSelection('sistema', 'PJe1G')">
+                <span class="checkmark"></span> <span class="checkbox-text">PJe 1G</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterSistema().includes('PJe2G')" (change)="toggleFilterSelection('sistema', 'PJe2G')">
+                <span class="checkmark"></span> <span class="checkbox-text">PJe 2G</span>
+              </label>
+            </div>
+
+            <div class="filter-section">
+              <h4>Vínculo</h4>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterVinculo().includes('ATIVO')" (change)="toggleFilterSelection('vinculo', 'ATIVO')">
+                <span class="checkmark"></span> <span class="checkbox-text">Ativo</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterVinculo().includes('INATIVO')" (change)="toggleFilterSelection('vinculo', 'INATIVO')">
+                <span class="checkmark"></span> <span class="checkbox-text">Inativo</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterVinculo().includes('SEM_VINCULO')" (change)="toggleFilterSelection('vinculo', 'SEM_VINCULO')">
+                <span class="checkmark"></span> <span class="checkbox-text">Sem vínculo</span>
+              </label>
+            </div>
+
+            <div class="filter-section">
+              <h4>Situação</h4>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterSituacao().includes('ACESSO_INVALIDO')" (change)="toggleFilterSelection('situacao', 'ACESSO_INVALIDO')">
+                <span class="checkmark"></span> <span class="checkbox-text">Acesso inválido</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterSituacao().includes('EXPIRADO')" (change)="toggleFilterSelection('situacao', 'EXPIRADO')">
+                <span class="checkmark"></span> <span class="checkbox-text">Acesso expirado</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterSituacao().includes('PROXIMO_EXPIRAR')" (change)="toggleFilterSelection('situacao', 'PROXIMO_EXPIRAR')">
+                <span class="checkmark"></span> <span class="checkbox-text">Próximo de expirar</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterSituacao().includes('SEM_EMAIL_INSTITUCIONAL')" (change)="toggleFilterSelection('situacao', 'SEM_EMAIL_INSTITUCIONAL')">
+                <span class="checkmark"></span> <span class="checkbox-text">Sem e-mail institucional</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="filterSituacao().includes('PERFIL_INCORRETO')" (change)="toggleFilterSelection('situacao', 'PERFIL_INCORRETO')">
+                <span class="checkmark"></span> <span class="checkbox-text">Perfil incorreto</span>
+              </label>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
   <div class="table-wrap">
     <table class="critical-table" aria-label="Usuários críticos">
       <thead>
@@ -49,7 +135,7 @@
         }
         @if (rows().length === 0) {
           <tr>
-            <td colspan="6" class="empty-row">Nenhum usuário crítico encontrado para os filtros atuais.</td>
+            <td colspan="6" class="empty-row">Nenhum usuário encontrado na pesquisa.</td>
           </tr>
         }
       </tbody>

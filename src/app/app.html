@@ -1,43 +1,28 @@
-<div class="app-layout">
-  <div class="app-layout">
+<div class="app-layout" [class.sidebar-closed]="!sidebarOpen()">
   <app-header
     [systemName]="'Gerenciamento de Acesso'"
     [version]="'1.0.0'"
-    [userName]="'Seu Nome'"
+    [userName]="'Usuário Exemplo'"
     [userAvatarUrl]="null"
     [initialSessionSeconds]="0"
+    [sidebarOpen]="sidebarOpen()"
+    (toggleSidebar)="toggleSidebar()"
     (logout)="logoutHandler()"
   ></app-header>
   <app-sidebar
     [isOpen]="sidebarOpen()"
-    (closeSidebar)="closeSidebar()"
-    (openSidebar)="openSidebar()">
+    (closeSidebar)="closeSidebar()">
   </app-sidebar>
-  <div class="app-layout">
-    <app-header
-      [systemName]="'Gerenciamento de Acesso'"
-      [version]="'1.0.0'"
-      [userName]="'Usuário Exemplo'"
-      [userAvatarUrl]="null"
-      [initialSessionSeconds]="0"
-      (logout)="logoutHandler()"
-    ></app-header>
-    <app-sidebar
-      [isOpen]="sidebarOpen()"
-      (closeSidebar)="closeSidebar()"
-      (openSidebar)="openSidebar()">
-    </app-sidebar>
-
-    <div class="app-content">
-      <button
-        class="btn btn-dark d-md-none sidebar-toggle"
-        (click)="toggleSidebar()"
-        aria-label="Toggle sidebar">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
-        </svg>
-      </button>
-      <router-outlet />
+  <div class="app-content">
+    <button
+      class="btn btn-dark d-md-none sidebar-toggle"
+      (click)="toggleSidebar()"
+      aria-label="Toggle sidebar">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+      </svg>
+    </button>
+    <router-outlet />
     </div>
   </div>
 

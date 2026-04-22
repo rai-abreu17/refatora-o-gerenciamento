@@ -1,7 +1,10 @@
 <section class="heatmap-card" aria-labelledby="heatmap-title">
   <header class="heatmap-card__head">
     <div>
-      <h3 id="heatmap-title" class="heatmap-card__title">Logins por hora × dia da semana</h3>
+      <h3 id="heatmap-title" class="heatmap-card__title">
+        Logins por hora × dia da semana
+        <app-info-tooltip text="Mapa de calor que exibe a concentração de logins por hora do dia e dia da semana. Células mais escuras indicam maior volume de acessos. Útil para identificar padrões de uso, horários de pico e períodos de baixa atividade."></app-info-tooltip>
+      </h3>
       <p class="heatmap-card__subtitle">Pico: {{ peakLabel() }}</p>
     </div>
     <div class="heatmap-legend" aria-hidden="true">

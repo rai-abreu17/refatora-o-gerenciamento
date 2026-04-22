@@ -75,6 +75,41 @@
   letter-spacing: 0.02em;
 }
 
+// Botão de destaque para alternar a sidebar, ao lado do nome do sistema.
+.btn-toggle-sidebar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin-left: var(--space-sm);
+  padding: 0;
+  border-radius: 8px;
+  background-color: #f5a623; // amarelo-destaque para contraste com o header azul
+  border: 1px solid #f5a623;
+  color: #0f3360;
+  cursor: pointer;
+  flex: 0 0 auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+    color 0.15s ease, transform 0.15s ease;
+
+  &:hover {
+    background-color: #ffb63a;
+    border-color: #ffb63a;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+}
+
 // ---------- Bloco direito ----------
 .header-user {
   display: flex;

@@ -28,10 +28,18 @@
 
 .app-content {
   flex: 1;
+  min-width: 0; /* Permite que o flex item contraia abaixo do tamanho do conteúdo */
+  width: calc(100% - 270px); /* Garante que não ultrapasse o espaço restante */
   margin-left: 270px;
   background-color: var(--color-bg, #f4f6f9);
   min-height: 100vh;
   position: relative;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+.app-layout.sidebar-closed .app-content {
+  margin-left: 0;
+  width: 100%;
 }
 
 .sidebar-toggle {

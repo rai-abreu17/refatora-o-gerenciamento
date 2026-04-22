@@ -38,6 +38,58 @@
     </mat-chip-listbox>
   </div>
 
+  <div class="filter-group filter-group--select">
+    <span class="filter-label" id="filter-perfil">Perfil</span>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="select-field">
+      <mat-select
+        multiple
+        aria-labelledby="filter-perfil"
+        placeholder="Todos os perfis"
+        [value]="filters().perfis"
+        (selectionChange)="onMultiSelectChange('perfil', $event.value)">
+        @for (p of perfis; track p) {
+          <mat-option [value]="p">{{ perfilLabel[p] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="filter-group filter-group--select filter-group--wide">
+    <span class="filter-label" id="filter-localizacao">Localização</span>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="select-field">
+      <mat-select
+        multiple
+        aria-labelledby="filter-localizacao"
+        placeholder="Todas as unidades"
+        [value]="filters().localizacoes"
+        (selectionChange)="onMultiSelectChange('localizacao', $event.value)">
+        @for (l of localizacoes; track l) {
+          <mat-option [value]="l">{{ localizacaoLabel[l] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="filter-group filter-group--date">
+    <span class="filter-label" id="filter-periodo">Período</span>
+    <mat-form-field appearance="outline" class="date-range-field" subscriptSizing="dynamic">
+      <mat-date-range-input [rangePicker]="picker">
+        <input
+          matStartDate
+          placeholder="Início"
+          [value]="filters().startDate"
+          (dateChange)="onStartDateChange($event.value)" />
+        <input
+          matEndDate
+          placeholder="Fim"
+          [value]="filters().endDate"
+          (dateChange)="onEndDateChange($event.value)" />
+      </mat-date-range-input>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+  </div>
+
   @if (hasActive()) {
     <button
       type="button"

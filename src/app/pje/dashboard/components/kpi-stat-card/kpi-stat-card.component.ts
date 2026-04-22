@@ -7,6 +7,7 @@ import {
   effect,
   input,
 } from '@angular/core';
+import { InfoTooltipComponent } from '../../../../shared/components/info-tooltip/info-tooltip.component';
 import {
   Chart,
   ChartConfiguration,
@@ -34,6 +35,7 @@ const TONE_BG: Record<KpiTone, string> = {
 @Component({
   selector: 'app-kpi-stat-card',
   standalone: true,
+  imports: [InfoTooltipComponent],
   template: `
     <article
       class="kpi"
@@ -41,12 +43,17 @@ const TONE_BG: Record<KpiTone, string> = {
       [attr.aria-label]="title() + ', valor ' + value()">
       <header class="kpi__head">
         <span class="kpi__title">{{ title() }}</span>
-        @if (deltaPct() !== null) {
-          <span class="kpi__delta" [class.kpi__delta--neg]="deltaPct()! < 0">
-            <span aria-hidden="true">{{ deltaPct()! >= 0 ? '▲' : '▼' }}</span>
-            {{ formatDelta(deltaPct()!) }}
-          </span>
-        }
+        <span class="kpi__head-right">
+          @if (infoText()) {
+            <app-info-tooltip [text]="infoText()" color="rgba(255,255,255,0.75)"></app-info-tooltip>
+          }
+          @if (deltaPct() !== null) {
+            <span class="kpi__delta" [class.kpi__delta--neg]="deltaPct()! < 0">
+              <span aria-hidden="true">{{ deltaPct()! >= 0 ? '▲' : '▼' }}</span>
+              {{ formatDelta(deltaPct()!) }}
+            </span>
+          }
+        </span>
       </header>
       <div class="kpi__value">{{ value() }}</div>
       @if (hint()) {
@@ -74,6 +81,7 @@ const TONE_BG: Record<KpiTone, string> = {
     }
     .kpi:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(15, 51, 96, 0.18); }
     .kpi__head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .kpi__head-right { display: flex; align-items: center; gap: 6px; }
     .kpi__title {
       font-size: 0.78rem;
       font-weight: 600;
@@ -114,7 +122,8 @@ export class KpiStatCardComponent implements AfterViewInit, OnDestroy {
   deltaPct = input<number | null>(null);
   sparkline = input<number[]>([]);
   tone = input<KpiTone>('primary');
-  hint = input<string>('');
+  hint     = input<string>('');
+  infoText = input<string>('');
 
   @ViewChild('spark') sparkRef?: ElementRef<HTMLCanvasElement>;
   private chart?: Chart<'line'>;

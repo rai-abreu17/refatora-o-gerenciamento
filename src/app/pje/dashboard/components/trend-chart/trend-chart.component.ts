@@ -3,6 +3,7 @@ import { BaseChartDirective } from 'ng2-charts';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { InfoTooltipComponent } from '../../../../shared/components/info-tooltip/info-tooltip.component';
 import {
   Chart,
   ChartConfiguration,
@@ -22,7 +23,7 @@ Chart.register(LineController, LineElement, PointElement, CategoryScale, LinearS
 @Component({
   selector: 'app-trend-chart',
   standalone: true,
-  imports: [BaseChartDirective, MatIconModule, MatButtonModule, MatButtonToggleModule],
+  imports: [BaseChartDirective, MatIconModule, MatButtonModule, MatButtonToggleModule, InfoTooltipComponent],
   templateUrl: './trend-chart.component.html',
   styleUrl: './trend-chart.component.scss',
 })

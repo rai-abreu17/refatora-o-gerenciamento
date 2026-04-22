@@ -11,9 +11,12 @@ import {
   HeatmapCell,
   KpiCardData,
   LastAccessBucket,
+  Localizacao,
   Orgao,
   OrgaoSistemaBucket,
   Origem,
+  PerfilPJe,
+  PERFIL_LABEL,
   Sistema,
   StatusConformidade,
   Usuario,
@@ -88,6 +91,13 @@ export class DashboardService {
   /** Snapshot completo usado pelo novo dashboard. */
   getSnapshot(filters: DashboardFilters): Observable<DashboardSnapshot> {
     const filtered = this.filterUsuarios(filters);
+    const kpiUsers = {
+      acessosCriticos: filtered.filter((u) => u.conformidade.some((c) => c === 'EXPIRADO' || c === 'ACESSO_INVALIDO' || c === 'PROXIMO_EXPIRAR')),
+      semEmail: filtered.filter((u) => !u.emailInstitucional),
+      perfilIncorreto: filtered.filter((u) => u.conformidade.includes('PERFIL_INCORRETO')),
+      conformes: filtered.filter((u) => u.conformidade.length === 1 && u.conformidade[0] === 'OK')
+    };
+
     const snap: DashboardSnapshot = {
       totalUsuarios: filtered.length,
       kpis: this.buildKpis(filtered, filters),
@@ -96,10 +106,12 @@ export class DashboardService {
       heatmap: this.buildHeatmap(filtered),
       vinculoDistribution: this.buildVinculoDistribution(filtered),
       origemDistribution: this.buildOrigemDistribution(filtered),
+      perfilDistribution: this.buildPerfilDistribution(filtered),
       orgaoSistema: this.buildOrgaoSistema(filtered),
       lastAccessBuckets: this.buildLastAccessBuckets(filtered),
       compliance: this.buildCompliance(filtered),
       criticos: this.buildCriticos(filtered, 15),
+      kpiUsers,
     };
     return of(snap).pipe(delay(200));
   }
@@ -131,6 +143,52 @@ export class DashboardService {
         { v: 'INATIVO', w: 15 },
         { v: 'SEM_VINCULO', w: 10 },
       ]);
+      // Perfis derivados da Portaria TSE 394/2015 — distribuição típica em Justiça Eleitoral
+      const perfil: PerfilPJe = origem === 'INTERNO'
+        ? pick(rng, [
+            { v: 'SERVIDOR', w: 55 },
+            { v: 'MAGISTRADO', w: 15 },
+            { v: 'ESTAGIARIO', w: 20 },
+            { v: 'PROCURADOR', w: 7 },
+            { v: 'PERITO', w: 3 },
+          ])
+        : pick(rng, [
+            { v: 'ADVOGADO', w: 70 },
+            { v: 'PROCURADOR', w: 18 },
+            { v: 'PERITO', w: 12 },
+          ]);
+
+      // Localização: unidade institucional do tribunal/procuradoria.
+      // Distribuição correlaciona perfil + órgão para refletir a estrutura real.
+      let localizacao: Localizacao;
+      if (perfil === 'PROCURADOR') {
+        localizacao = orgao === 'TSE' ? 'PROCURADORIA_GERAL' : 'PROCURADORIA_REGIONAL';
+      } else if (perfil === 'ADVOGADO' || perfil === 'PERITO') {
+        // Externos atuam principalmente nos cartórios eleitorais
+        localizacao = pick(rng, [
+          { v: 'CARTORIO_ELEITORAL', w: 70 },
+          { v: 'SECRETARIA_JUDICIARIA', w: 30 },
+        ]);
+      } else if (perfil === 'MAGISTRADO') {
+        localizacao = pick(rng, [
+          { v: 'PRESIDENCIA', w: 10 },
+          { v: 'CORREGEDORIA', w: 15 },
+          { v: 'SECRETARIA_JUDICIARIA', w: 50 },
+          { v: 'CARTORIO_ELEITORAL', w: 25 },
+        ]);
+      } else {
+        // Servidores e estagiários distribuídos pelas secretarias e demais unidades
+        localizacao = pick(rng, [
+          { v: 'SECRETARIA_JUDICIARIA', w: 28 },
+          { v: 'SECRETARIA_ADMINISTRACAO', w: 18 },
+          { v: 'SECRETARIA_TI', w: 12 },
+          { v: 'SECRETARIA_GESTAO_PESSOAS', w: 10 },
+          { v: 'CARTORIO_ELEITORAL', w: 18 },
+          { v: 'CORREGEDORIA', w: 5 },
+          { v: 'ESCOLA_JUDICIARIA', w: 5 },
+          { v: 'OUVIDORIA', w: 4 },
+        ]);
+      }
 
       const nunca = rng() < 0.08;
       let ultimoAcesso: string | null = null;
@@ -166,6 +224,8 @@ export class DashboardService {
         sistema,
         origem,
         vinculo,
+        perfil,
+        localizacao,
         conformidade,
         ultimoAcesso,
         emailInstitucional,
@@ -179,10 +239,20 @@ export class DashboardService {
   // Derivações
   // ────────────────────────────────────────────────────────────────────
   private filterUsuarios(f: DashboardFilters): Usuario[] {
+    const startMs = f.startDate ? f.startDate.getTime() : null;
+    const endMs = f.endDate ? f.endDate.getTime() : null;
     return this.usuarios.filter((u) => {
       if (f.orgaos.length && !f.orgaos.includes(u.orgao)) return false;
       if (f.sistemas.length && !f.sistemas.includes(u.sistema)) return false;
       if (f.origens.length && !f.origens.includes(u.origem)) return false;
+      if (f.perfis.length && !f.perfis.includes(u.perfil)) return false;
+      if (f.localizacoes.length && !f.localizacoes.includes(u.localizacao)) return false;
+      if (startMs !== null || endMs !== null) {
+        if (!u.ultimoAcesso) return false;
+        const t = new Date(u.ultimoAcesso).getTime();
+        if (startMs !== null && t < startMs) return false;
+        if (endMs !== null && t > endMs) return false;
+      }
       return true;
     });
   }
@@ -215,6 +285,7 @@ export class DashboardService {
         sparkline: spark(total),
         tone: 'primary',
         hint: `${ativos.toLocaleString('pt-BR')} ativos (${pct(ativos, total)}%)`,
+        infoText: 'Total de usuários cadastrados no PJe, contemplando todos os status de vínculo.',
       },
       {
         id: 'acessos-criticos',
@@ -224,6 +295,7 @@ export class DashboardService {
         sparkline: spark(expiradosInvalidos, 0.25),
         tone: 'danger',
         hint: 'expirados + inválidos + próximos',
+        infoText: 'Soma de usuários com acesso inválido, expirado ou próximo de expirar. Requer atenção imediata.',
       },
       {
         id: 'sem-email',
@@ -233,6 +305,7 @@ export class DashboardService {
         sparkline: spark(semEmail, 0.2),
         tone: 'warning',
         hint: `${pct(semEmail, total)}% do total`,
+        infoText: 'Quantidade de usuários cadastrados que não possuem um e-mail institucional registrado.',
       },
       {
         id: 'perfil-incorreto',
@@ -242,6 +315,7 @@ export class DashboardService {
         sparkline: spark(perfilIncorreto, 0.3),
         tone: 'accent',
         hint: 'requer revisão manual',
+        infoText: 'Usuários identificados com perfis incompatíveis com suas funções atuais no sistema.',
       },
       {
         id: 'taxa-conformidade',
@@ -251,6 +325,7 @@ export class DashboardService {
         sparkline: spark(Math.round(taxaConformidade * 10), 0.08),
         tone: 'success',
         hint: `${conformes.toLocaleString('pt-BR')} regulares`,
+        infoText: 'Percentual de usuários que estão totalmente regulares, sem pendências ou alertas.',
       },
     ];
   }
@@ -360,6 +435,25 @@ export class DashboardService {
     ];
   }
 
+  private buildPerfilDistribution(users: Usuario[]): DistributionSlice[] {
+    const palette: Record<PerfilPJe, string> = {
+      MAGISTRADO: '#0F3360',
+      SERVIDOR: '#1B4F8A',
+      ADVOGADO: '#E8A000',
+      PROCURADOR: '#6A1B9A',
+      ESTAGIARIO: '#2E7D32',
+      PERITO: '#C62828',
+    };
+    const ordem: PerfilPJe[] = [
+      'SERVIDOR', 'ADVOGADO', 'MAGISTRADO', 'PROCURADOR', 'ESTAGIARIO', 'PERITO',
+    ];
+    return ordem.map((p) => ({
+      label: PERFIL_LABEL[p],
+      value: users.filter((u) => u.perfil === p).length,
+      color: palette[p],
+    }));
+  }
+
   private buildOrgaoSistema(users: Usuario[]): OrgaoSistemaBucket[] {
     const combos: OrgaoSistemaBucket[] = [];
     (['TRE-MA', 'TSE'] as Orgao[]).forEach((orgao) => {
@@ -439,10 +533,17 @@ export interface DashboardSnapshot {
   heatmap: HeatmapCell[];
   vinculoDistribution: DistributionSlice[];
   origemDistribution: DistributionSlice[];
+  perfilDistribution: DistributionSlice[];
   orgaoSistema: OrgaoSistemaBucket[];
   lastAccessBuckets: LastAccessBucket[];
   compliance: ComplianceMetric[];
   criticos: Usuario[];
+  kpiUsers: {
+    acessosCriticos: Usuario[];
+    semEmail: Usuario[];
+    perfilIncorreto: Usuario[];
+    conformes: Usuario[];
+  };
 }
 
 // Reexport para compatibilidade com os imports atuais do dashboard legado

@@ -47,6 +47,12 @@ export class HeaderComponent {
   /** Segundos já decorridos da sessão quando o componente é montado. */
   initialSessionSeconds = input<number>(0);
 
+  /** Estado atual da sidebar — controla o ícone do botão de toggle. */
+  sidebarOpen = input<boolean>(false);
+
+  /** Dispara ao clicar no botão de alternar a sidebar. */
+  toggleSidebar = output<void>();
+
   /** Dispara ao clicar em "Sair". Consumidor executa o logout efetivo. */
   logout = output<void>();
 
@@ -68,6 +74,10 @@ export class HeaderComponent {
 
   onLogout(): void {
     this.logout.emit();
+  }
+
+  onToggleSidebar(): void {
+    this.toggleSidebar.emit();
   }
 
   private formatDuration(totalSeconds: number): string {

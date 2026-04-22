@@ -18,6 +18,22 @@
   min-width: 180px;
 }
 
+.filter-group--wide { min-width: 320px; flex: 1 1 320px; }
+
+.filter-group--date { min-width: 240px; }
+
+.filter-group--select { min-width: 220px; }
+
+.date-range-field,
+.select-field {
+  width: 100%;
+}
+
+::ng-deep .filter-group--date .mat-mdc-form-field-subscript-wrapper,
+::ng-deep .filter-group--select .mat-mdc-form-field-subscript-wrapper { display: none; }
+::ng-deep .filter-group--date .mat-mdc-text-field-wrapper,
+::ng-deep .filter-group--select .mat-mdc-text-field-wrapper { padding: 0 12px; }
+
 .filter-label {
   font-size: 0.72rem;
   font-weight: 600;

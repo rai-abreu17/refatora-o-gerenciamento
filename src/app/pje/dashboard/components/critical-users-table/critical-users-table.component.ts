@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
 import {
   CONFORMIDADE_LABEL,
   ORGAO_LABEL,
@@ -28,8 +28,68 @@ export class CriticalUsersTableComponent {
   readonly sistemaLabel = SISTEMA_LABEL;
   readonly vinculoLabel = VINCULO_LABEL;
 
+  searchTerm = signal<string>('');
+  
+  showFilters = signal(false);
+  filterOrgao = signal<string[]>([]);
+  filterSistema = signal<string[]>([]);
+  filterVinculo = signal<string[]>([]);
+  filterSituacao = signal<string[]>([]);
+
+  toggleFilters(): void {
+    this.showFilters.set(!this.showFilters());
+  }
+
+  toggleFilterSelection(group: 'orgao' | 'sistema' | 'vinculo' | 'situacao', value: string): void {
+    if (group === 'orgao') {
+      this.filterOrgao.update(v => v.includes(value) ? v.filter(x => x !== value) : [...v, value]);
+    } else if (group === 'sistema') {
+      this.filterSistema.update(v => v.includes(value) ? v.filter(x => x !== value) : [...v, value]);
+    } else if (group === 'vinculo') {
+      this.filterVinculo.update(v => v.includes(value) ? v.filter(x => x !== value) : [...v, value]);
+    } else if (group === 'situacao') {
+      this.filterSituacao.update(v => v.includes(value) ? v.filter(x => x !== value) : [...v, value]);
+    }
+  }
+
+  onSearch(event: Event): void {
+    const el = event.target as HTMLInputElement;
+    this.searchTerm.set(el.value);
+  }
+
+  filteredUsers = computed(() => {
+    const term = this.searchTerm().toLowerCase().trim();
+    const orgao = this.filterOrgao();
+    const sistema = this.filterSistema();
+    const vinculo = this.filterVinculo();
+    const situacao = this.filterSituacao();
+
+    let list = this.users();
+
+    if (orgao.length) list = list.filter(u => orgao.includes(u.orgao));
+    if (sistema.length) list = list.filter(u => sistema.includes(u.sistema));
+    if (vinculo.length) list = list.filter(u => vinculo.includes(u.vinculo));
+    
+    if (situacao.length) {
+      // O usuário deve ter apenas situações que estejam selecionadas no filtro
+      list = list.filter(u => u.conformidade.every(c => situacao.includes(c)));
+    }
+    
+    if (term) {
+      list = list.filter(u => 
+        u.nome.toLowerCase().includes(term) ||
+        u.matricula.includes(term) ||
+        this.orgaoLabel[u.orgao].toLowerCase().includes(term) ||
+        this.sistemaLabel[u.sistema].toLowerCase().includes(term) ||
+        this.vinculoLabel[u.vinculo].toLowerCase().includes(term)
+      );
+    }
+
+    return list;
+  });
+
   rows = computed<Row[]>(() =>
-    this.users().map((u) => ({
+    this.filteredUsers().map((u) => ({
       user: u,
       ultimoAcessoFmt: this.formatUltimoAcesso(u.ultimoAcesso),
       conformidadeBadges: u.conformidade

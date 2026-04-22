@@ -15,36 +15,47 @@
           [deltaPct]="k.deltaPct"
           [sparkline]="k.sparkline"
           [tone]="k.tone"
-          [hint]="k.hint ?? ''">
+          [hint]="k.hint ?? ''"
+          [infoText]="k.infoText ?? ''"
+          (click)="openModal(k.id)"
+          [class.clickable]="k.id !== 'total-usuarios'">
         </app-kpi-stat-card>
       }
     </section>
 
-    <app-trend-chart
-      [series1G]="snap.series1G"
-      [series2G]="snap.series2G"
-      [granularity]="filters().granularity"
-      (granularityChange)="onGranularityChange($event)">
-    </app-trend-chart>
-
-    <div class="analytic-grid">
-      <div class="analytic-grid__cell analytic-grid__cell--wide">
-        <app-login-heatmap [cells]="snap.heatmap"></app-login-heatmap>
+    <div class="trend-row">
+      <div class="trend-row__main">
+        <app-trend-chart
+          [series1G]="snap.series1G"
+          [series2G]="snap.series2G"
+          [granularity]="filters().granularity"
+          (granularityChange)="onGranularityChange($event)">
+        </app-trend-chart>
       </div>
-      <div class="analytic-grid__cell">
+      <div class="trend-row__side">
         <app-distribution-chart
           [title]="'Vínculo cadastral'"
           [subtitle]="'Ativo · Inativo · Sem vínculo'"
           [variant]="'donut'"
-          [slices]="snap.vinculoDistribution">
+          [slices]="snap.vinculoDistribution"
+          infoText="Classifica os usuários pelo tipo de vínculo com o tribunal: Ativo (acesso autorizado e vigente), Inativo (vínculo encerrado) e Sem vínculo (sem cadastro formal). Altos índices de Inativo ou Sem vínculo indicam necessidade de revisão cadastral.">
         </app-distribution-chart>
       </div>
+    </div>
+
+    <div class="activity-row">
+      <app-login-heatmap [cells]="snap.heatmap"></app-login-heatmap>
+      <app-last-access-buckets [buckets]="snap.lastAccessBuckets"></app-last-access-buckets>
+    </div>
+
+    <div class="analytic-grid">
       <div class="analytic-grid__cell">
         <app-distribution-chart
           [title]="'Origem do usuário'"
           [subtitle]="'Interno × Externo'"
           [variant]="'hbar'"
-          [slices]="snap.origemDistribution">
+          [slices]="snap.origemDistribution"
+          infoText="Separa os usuários entre Internos (servidores, magistrados e estagiários do tribunal) e Externos (advogados, peritos e procuradores). Permite avaliar a proporção de usuários externos com acesso ao sistema.">
         </app-distribution-chart>
       </div>
       <div class="analytic-grid__cell">
@@ -53,20 +64,47 @@
           [subtitle]="'Usuários por órgão e sistema'"
           [variant]="'grouped-bar'"
           [categories]="orgaoSistemaCategories()"
-          [series]="orgaoSistemaSeries(snap)">
+          [series]="orgaoSistemaSeries(snap)"
+          infoText="Compara o volume de usuários por órgão (TRE-MA e TSE) e por geração do sistema (PJe 1G e 2G). Útil para análise institucional cruzada e planejamento de migração entre gerações do sistema.">
         </app-distribution-chart>
       </div>
-      <div class="analytic-grid__cell analytic-grid__cell--wide">
-        <app-last-access-buckets [buckets]="snap.lastAccessBuckets"></app-last-access-buckets>
+      <div class="analytic-grid__cell">
+        <app-distribution-chart
+          [title]="'Perfis de acesso'"
+          [subtitle]="'Distribuição por papel no PJe'"
+          [variant]="'donut'"
+          [slices]="snap.perfilDistribution"
+          infoText="Exibe a proporção de cada perfil funcional cadastrado no PJe: Servidor, Advogado, Magistrado, Procurador, Estagiário e Perito. Auxilia na identificação de concentrações atípicas de perfis que podem exigir revisão.">
+        </app-distribution-chart>
       </div>
     </div>
 
-    <app-critical-users-table [users]="snap.criticos"></app-critical-users-table>
-
-    <app-compliance-footer [metrics]="snap.compliance"></app-compliance-footer>
   } @else {
     <div class="dashboard__loading" role="status" aria-live="polite">
       <span>Carregando dashboard...</span>
+    </div>
+  }
+
+  @if (modalData(); as data) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <header class="modal-header">
+          <div class="modal-header__text">
+            <h2>{{ data.title }}</h2>
+            <p>{{ data.subtitle }}</p>
+          </div>
+          <button class="modal-close" (click)="closeModal()" aria-label="Fechar modal">×</button>
+        </header>
+        <div class="modal-body">
+          @if (data.users.length > 0) {
+            <app-critical-users-table 
+              [users]="data.users">
+            </app-critical-users-table>
+          } @else {
+            <p class="modal-empty">Nenhum usuário encontrado para este indicador.</p>
+          }
+        </div>
+      </div>
     </div>
   }
 </div>

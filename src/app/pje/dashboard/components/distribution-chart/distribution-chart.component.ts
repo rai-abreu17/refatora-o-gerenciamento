@@ -1,5 +1,6 @@
 import { Component, computed, input } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
+import { InfoTooltipComponent } from '../../../../shared/components/info-tooltip/info-tooltip.component';
 import {
   ArcElement,
   BarController,
@@ -27,7 +28,7 @@ export interface GroupedSeries {
 @Component({
   selector: 'app-distribution-chart',
   standalone: true,
-  imports: [BaseChartDirective],
+  imports: [BaseChartDirective, InfoTooltipComponent],
   templateUrl: './distribution-chart.component.html',
   styleUrl: './distribution-chart.component.scss',
 })
@@ -38,6 +39,7 @@ export class DistributionChartComponent {
   categories = input<string[]>([]);
   series = input<GroupedSeries[]>([]);
   subtitle = input<string>('');
+  infoText = input<string>('');
 
   total = computed(() => this.slices().reduce((s, x) => s + x.value, 0));
 

@@ -2,6 +2,26 @@ export type Orgao = 'TRE-MA' | 'TSE';
 export type Sistema = 'PJe1G' | 'PJe2G';
 export type Origem = 'INTERNO' | 'EXTERNO';
 export type VinculoCadastral = 'ATIVO' | 'INATIVO' | 'SEM_VINCULO';
+export type PerfilPJe =
+  | 'MAGISTRADO'
+  | 'SERVIDOR'
+  | 'ADVOGADO'
+  | 'PROCURADOR'
+  | 'ESTAGIARIO'
+  | 'PERITO';
+
+export type Localizacao =
+  | 'SECRETARIA_JUDICIARIA'
+  | 'SECRETARIA_ADMINISTRACAO'
+  | 'SECRETARIA_TI'
+  | 'SECRETARIA_GESTAO_PESSOAS'
+  | 'CORREGEDORIA'
+  | 'PRESIDENCIA'
+  | 'ESCOLA_JUDICIARIA'
+  | 'OUVIDORIA'
+  | 'CARTORIO_ELEITORAL'
+  | 'PROCURADORIA_REGIONAL'
+  | 'PROCURADORIA_GERAL';
 export type StatusConformidade =
   | 'OK'
   | 'ACESSO_INVALIDO'
@@ -20,6 +40,8 @@ export interface Usuario {
   sistema: Sistema;
   origem: Origem;
   vinculo: VinculoCadastral;
+  perfil: PerfilPJe;
+  localizacao: Localizacao;
   conformidade: StatusConformidade[];
   /** ISO date (yyyy-MM-dd) ou null quando o usuário nunca acessou */
   ultimoAcesso: string | null;
@@ -33,6 +55,8 @@ export interface DashboardFilters {
   orgaos: Orgao[];
   sistemas: Sistema[];
   origens: Origem[];
+  perfis: PerfilPJe[];
+  localizacoes: Localizacao[];
 }
 
 export const EMPTY_FILTERS: DashboardFilters = {
@@ -42,6 +66,8 @@ export const EMPTY_FILTERS: DashboardFilters = {
   orgaos: [],
   sistemas: [],
   origens: [],
+  perfis: [],
+  localizacoes: [],
 };
 
 export type KpiTone = 'primary' | 'info' | 'warning' | 'danger' | 'success' | 'accent';
@@ -57,6 +83,8 @@ export interface KpiCardData {
   tone: KpiTone;
   /** Texto secundário curto, ex.: "de 1.245 usuários" */
   hint?: string;
+  /** Texto explicativo exibido no ícone ℹ */
+  infoText?: string;
 }
 
 export interface AccessSeriesPoint {
@@ -127,6 +155,29 @@ export const VINCULO_LABEL: Record<VinculoCadastral, string> = {
   ATIVO: 'Ativo',
   INATIVO: 'Inativo',
   SEM_VINCULO: 'Sem vínculo',
+};
+
+export const PERFIL_LABEL: Record<PerfilPJe, string> = {
+  MAGISTRADO: 'Magistrado',
+  SERVIDOR: 'Servidor',
+  ADVOGADO: 'Advogado',
+  PROCURADOR: 'Procurador',
+  ESTAGIARIO: 'Estagiário',
+  PERITO: 'Perito',
+};
+
+export const LOCALIZACAO_LABEL: Record<Localizacao, string> = {
+  SECRETARIA_JUDICIARIA: 'Secretaria Judiciária',
+  SECRETARIA_ADMINISTRACAO: 'Secretaria de Administração',
+  SECRETARIA_TI: 'Secretaria de Tecnologia da Informação',
+  SECRETARIA_GESTAO_PESSOAS: 'Secretaria de Gestão de Pessoas',
+  CORREGEDORIA: 'Corregedoria Regional Eleitoral',
+  PRESIDENCIA: 'Presidência',
+  ESCOLA_JUDICIARIA: 'Escola Judiciária Eleitoral',
+  OUVIDORIA: 'Ouvidoria',
+  CARTORIO_ELEITORAL: 'Cartório Eleitoral',
+  PROCURADORIA_REGIONAL: 'Procuradoria Regional Eleitoral',
+  PROCURADORIA_GERAL: 'Procuradoria-Geral Eleitoral',
 };
 
 export const CONFORMIDADE_LABEL: Record<StatusConformidade, string> = {

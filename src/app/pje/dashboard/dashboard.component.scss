@@ -1,46 +1,206 @@
-:host { display: block; }
+:host {
+  display: block;
+}
+
 
 .dashboard {
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
-  padding-bottom: var(--space-xl);
+  gap: var(--space-lg, 32px);
+  /* fallback para 32px */
+  padding-bottom: var(--space-xl, 48px);
+  /* fallback para 48px */
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--space-md);
+  gap: var(--space-md, 20px);
+  /* fallback para 20px */
+  width: 100%;
 }
 
+// Trend chart (Acessos ao PJe) + Vínculo cadastral lado a lado
+.trend-row {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.trend-row__main {
+  flex: 2 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.trend-row__side {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.trend-row__main>*,
+.trend-row__side>* {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+}
+
+// Limita altura do donut (Vínculo cadastral)
+:host ::ng-deep .trend-row__side .dist-card__chart {
+  min-height: 0 !important;
+  max-height: 240px !important;
+  height: 100% !important;
+}
+
+// Limita altura do trend-chart
+:host ::ng-deep .trend-row__main .trend-card__chart {
+  min-height: 0 !important;
+  max-height: 240px !important;
+  height: 100% !important;
+}
+
+// Heatmap + Last-access lado a lado com mesma altura
+.activity-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  // Em grid, os itens do mesmo row são automaticamente
+  // esticados à mesma altura — sem circular reference
+}
+
+// 3 cards analíticos lado a lado
 .analytic-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: var(--space-md);
-}
-
-.analytic-grid__cell { grid-column: span 2; min-width: 0; }
-
-.analytic-grid__cell--wide { grid-column: span 3; }
-
-.dashboard__loading {
-  padding: var(--space-xl);
-  text-align: center;
-  color: var(--color-text-secondary);
-  background: var(--color-surface-card);
-  border: 1px dashed var(--color-border);
-  border-radius: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  width: 100%;
 }
 
 @media (max-width: 1199.98px) {
-  .analytic-grid { grid-template-columns: repeat(4, 1fr); }
-  .analytic-grid__cell { grid-column: span 2; }
-  .analytic-grid__cell--wide { grid-column: span 4; }
+  .analytic-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .analytic-grid__cell:last-child {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .trend-row {
+    flex-direction: column;
+  }
+
+  .activity-row {
+    grid-template-columns: 1fr;
+  }
+
+  .analytic-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .analytic-grid__cell:last-child {
+    grid-column: span 1;
+  }
 }
 
 @media (max-width: 767.98px) {
-  .kpi-grid { grid-template-columns: 1fr; }
-  .analytic-grid { grid-template-columns: 1fr; }
-  .analytic-grid__cell,
-  .analytic-grid__cell--wide { grid-column: span 1; }
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  z-index: 1000;
+  padding: 24px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 1100px;
+  height: 84vh;
+  /* Altura fixa impede que o modal encolha com poucos dados */
+  margin-top: 8vh;
+  margin-bottom: 8vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #eaeaea;
+  background-color: #fcfcfc;
+  flex-shrink: 0;
+  /* Garante que o header nunca seja esmagado */
+}
+
+.modal-header__text h2 {
+  margin: 0 0 4px 0;
+  font-size: 1.25rem;
+  color: #1a1a1a;
+}
+
+.modal-header__text p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  line-height: 1;
+  color: #666;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.2s ease;
+}
+
+.modal-close:hover {
+  color: #1a1a1a;
+}
+
+.modal-body {
+  padding: 20px 24px;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+  /* CRÍTICO: Permite que o body encolha e o modal respeite o max-height */
+}
+
+.modal-empty {
+  text-align: center;
+  color: #666;
+  padding: 32px 0;
+  font-size: 1.1rem;
 }
