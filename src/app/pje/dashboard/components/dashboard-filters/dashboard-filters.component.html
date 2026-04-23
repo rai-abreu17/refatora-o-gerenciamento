@@ -26,13 +26,13 @@
   </div>
 
   <div class="filter-group">
-    <span class="filter-label" id="filter-origem">Origem</span>
-    <mat-chip-listbox aria-labelledby="filter-origem" multiple>
-      @for (or of origens; track or) {
+    <span class="filter-label" id="filter-tipo-usuario">Tipo de Usuário</span>
+    <mat-chip-listbox aria-labelledby="filter-tipo-usuario" multiple>
+      @for (tu of tiposUsuario; track tu) {
         <mat-chip-option
-          [selected]="isActive('origem', or)"
-          (selectionChange)="toggle('origem', or)">
-          {{ origemLabel[or] }}
+          [selected]="isActive('tipoUsuario', tu)"
+          (selectionChange)="toggle('tipoUsuario', tu)">
+          {{ tipoUsuarioLabel[tu] }}
         </mat-chip-option>
       }
     </mat-chip-listbox>
@@ -78,18 +78,18 @@
         multiple
         panelClass="custom-select-panel"
         aria-labelledby="filter-localizacao"
-        placeholder="Todas as unidades"
+        placeholder="Todas as localizações"
         [value]="filters().localizacoes"
         (selectionChange)="onMultiSelectChange('localizacao', $event.value)">
         <div class="search-box-container" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
           <mat-icon class="search-icon">search</mat-icon>
-          <input type="text" class="search-input" placeholder="Pesquisar unidade..." (input)="onSearchLocalizacao($event)">
+          <input type="text" class="search-input" placeholder="Pesquisar localização..." (input)="onSearchLocalizacao($event)">
         </div>
 
-        @if ('todas as unidades'.includes(searchLocalizacao().toLowerCase())) {
+        @if ('todas as localizações'.includes(searchLocalizacao().toLowerCase())) {
           <mat-option value="ALL" class="option-all" [class.is-all-active]="filters().localizacoes.length === 0">
             <span [class.text-primary]="filters().localizacoes.length === 0">
-              Todas as unidades
+              Todas as localizações
             </span>
           </mat-option>
         }
@@ -98,7 +98,7 @@
           <mat-option [value]="l">{{ localizacaoLabel[l] }}</mat-option>
         }
         @if (filteredLocalizacoes().length === 0) {
-          <div class="no-results">Nenhuma unidade encontrada</div>
+          <div class="no-results">Nenhuma localização encontrada</div>
         }
       </mat-select>
     </mat-form-field>

@@ -14,7 +14,7 @@ import {
   Localizacao,
   Orgao,
   OrgaoSistemaBucket,
-  Origem,
+  TipoUsuario,
   PerfilPJe,
   PERFIL_LABEL,
   Sistema,
@@ -94,7 +94,7 @@ export class DashboardService {
     const kpiUsers = {
       acessosCriticos: filtered.filter((u) => u.conformidade.some((c) => c === 'EXPIRADO' || c === 'ACESSO_INVALIDO' || c === 'PROXIMO_EXPIRAR')),
       semEmail: filtered.filter((u) => !u.emailInstitucional),
-      perfilIncorreto: filtered.filter((u) => u.conformidade.includes('PERFIL_INCORRETO')),
+      perfilInvalido: filtered.filter((u) => u.conformidade.includes('PERFIL_INVALIDO')),
       conformes: filtered.filter((u) => u.conformidade.length === 1 && u.conformidade[0] === 'OK')
     };
 
@@ -105,7 +105,7 @@ export class DashboardService {
       series2G: this.buildSeriesForFilters('PJe2G', filtered, filters),
       heatmap: this.buildHeatmap(filtered),
       vinculoDistribution: this.buildVinculoDistribution(filtered),
-      origemDistribution: this.buildOrigemDistribution(filtered),
+      tipoUsuarioDistribution: this.buildTipoUsuarioDistribution(filtered),
       perfilDistribution: this.buildPerfilDistribution(filtered),
       orgaoSistema: this.buildOrgaoSistema(filtered),
       lastAccessBuckets: this.buildLastAccessBuckets(filtered),
@@ -134,7 +134,7 @@ export class DashboardService {
         { v: 'PJe1G', w: 70 },
         { v: 'PJe2G', w: 30 },
       ]);
-      const origem: Origem = pick(rng, [
+      const tipoUsuario: TipoUsuario = pick(rng, [
         { v: 'INTERNO', w: 70 },
         { v: 'EXTERNO', w: 30 },
       ]);
@@ -144,7 +144,7 @@ export class DashboardService {
         { v: 'SEM_VINCULO', w: 10 },
       ]);
       // Perfis derivados da Portaria TSE 394/2015 — distribuição típica em Justiça Eleitoral
-      const perfil: PerfilPJe = origem === 'INTERNO'
+      const perfil: PerfilPJe = tipoUsuario === 'INTERNO'
         ? pick(rng, [
             { v: 'SERVIDOR', w: 55 },
             { v: 'MAGISTRADO', w: 15 },
@@ -218,19 +218,19 @@ export class DashboardService {
       if (rng() < 0.09) conformidade.push('EXPIRADO');
       if (rng() < 0.12) conformidade.push('PROXIMO_EXPIRAR');
       
-      let motivoPerfilIncorreto: string | undefined = undefined;
-      if (origem === 'INTERNO' && rng() < 0.15) {
-        conformidade.push('PERFIL_INCORRETO');
+      let motivoPerfilInvalido: string | undefined = undefined;
+      if (tipoUsuario === 'INTERNO' && rng() < 0.15) {
+        conformidade.push('PERFIL_INVALIDO');
         if (rng() > 0.5) {
           const zonas = ['01ª', '10ª', '20ª', '35ª', '87ª'];
           const zonaAntiga = pick(rng, zonas.map(v => ({v, w:1})));
           const zonaNova = pick(rng, zonas.filter(z => z !== zonaAntiga).map(v => ({v, w:1})));
-          motivoPerfilIncorreto = `Divergência de lotação: Usuário possui perfil da ${zonaAntiga} ZONA cadastrado no PJe, porém a lotação atual no RH do TRE-MA é ${zonaNova} ZONA. Acesso antigo deve ser revogado.`;
+          motivoPerfilInvalido = `Divergência de lotação: Usuário possui perfil da ${zonaAntiga} ZONA cadastrado no PJe, porém a lotação atual no RH do TRE-MA é ${zonaNova} ZONA. Acesso antigo deve ser revogado.`;
         } else {
           const mutiroes = ['Mutirão Eleições 2024', 'Força-tarefa Biometria', 'Grupo de Apoio Metas CNJ'];
           const mutirao = pick(rng, mutiroes.map(v => ({v, w:1})));
           const papel = pick(rng, [{v: 'Assessor-chefe', w:1}, {v: 'Avaliador', w:1}, {v: 'Coordenador', w:1}]);
-          motivoPerfilIncorreto = `Privilégio expirado: Usuário mantém perfil de "${papel}" vinculado ao grupo de trabalho "${mutirao}", que foi encerrado oficialmente há mais de 3 meses.`;
+          motivoPerfilInvalido = `Privilégio expirado: Usuário mantém perfil de "${papel}" vinculado ao grupo de trabalho "${mutirao}", que foi encerrado oficialmente há mais de 3 meses.`;
         }
       }
       
@@ -242,7 +242,7 @@ export class DashboardService {
         matricula: Math.floor(10000 + rng() * 89999).toString(),
         orgao,
         sistema,
-        origem,
+        tipoUsuario,
         vinculo,
         perfil,
         localizacao,
@@ -251,7 +251,7 @@ export class DashboardService {
         emailInstitucional,
         emailPje,
         emailTre,
-        motivoPerfilIncorreto,
+        motivoPerfilInvalido,
       });
     }
 
@@ -267,7 +267,7 @@ export class DashboardService {
     return this.usuarios.filter((u) => {
       if (f.orgaos.length && !f.orgaos.includes(u.orgao)) return false;
       if (f.sistemas.length && !f.sistemas.includes(u.sistema)) return false;
-      if (f.origens.length && !f.origens.includes(u.origem)) return false;
+      if (f.tiposUsuario.length && !f.tiposUsuario.includes(u.tipoUsuario)) return false;
       if (f.perfis.length && !f.perfis.includes(u.perfil)) return false;
       if (f.localizacoes.length && !f.localizacoes.includes(u.localizacao)) return false;
       if (startMs !== null || endMs !== null) {
@@ -287,11 +287,11 @@ export class DashboardService {
       u.conformidade.some((c) => c === 'EXPIRADO' || c === 'ACESSO_INVALIDO' || c === 'PROXIMO_EXPIRAR'),
     ).length;
     const semEmail = users.filter((u) => !u.emailInstitucional).length;
-    const perfilIncorreto = users.filter((u) => u.conformidade.includes('PERFIL_INCORRETO')).length;
+    const perfilInvalido = users.filter((u) => u.conformidade.includes('PERFIL_INVALIDO')).length;
     const conformes = users.filter((u) => u.conformidade.length === 1 && u.conformidade[0] === 'OK').length;
     const taxaConformidade = total ? Math.round((conformes / total) * 1000) / 10 : 0;
 
-    const rng = mulberry32(SEED ^ (f.orgaos.length + f.sistemas.length * 7 + f.origens.length * 11));
+    const rng = mulberry32(SEED ^ (f.orgaos.length + f.sistemas.length * 7 + f.tiposUsuario.length * 11));
     const spark = (base: number, vol = 0.18) =>
       Array.from({ length: KPI_SPARKLINE_LEN }, (_, i) => {
         const trend = 1 + (i / KPI_SPARKLINE_LEN - 0.5) * 0.15;
@@ -331,11 +331,11 @@ export class DashboardService {
         infoText: 'Quantidade de usuários cadastrados que não possuem um e-mail institucional registrado.',
       },
       {
-        id: 'perfil-incorreto',
-        title: 'Perfil incorreto',
-        value: perfilIncorreto.toLocaleString('pt-BR'),
+        id: 'perfil-invalido',
+        title: 'Perfil inválido',
+        value: perfilInvalido.toLocaleString('pt-BR'),
         deltaPct: this.pctFake(rng, -4, 8),
-        sparkline: spark(perfilIncorreto, 0.3),
+        sparkline: spark(perfilInvalido, 0.3),
         tone: 'accent',
         hint: 'requer revisão manual',
         infoText: 'Usuários identificados com perfis incompatíveis com suas funções atuais no sistema.',
@@ -449,9 +449,9 @@ export class DashboardService {
     ];
   }
 
-  private buildOrigemDistribution(users: Usuario[]): DistributionSlice[] {
-    const internos = users.filter((u) => u.origem === 'INTERNO').length;
-    const externos = users.filter((u) => u.origem === 'EXTERNO').length;
+  private buildTipoUsuarioDistribution(users: Usuario[]): DistributionSlice[] {
+    const internos = users.filter((u) => u.tipoUsuario === 'INTERNO').length;
+    const externos = users.filter((u) => u.tipoUsuario === 'EXTERNO').length;
     return [
       { label: 'Interno', value: internos, color: '#1B4F8A' },
       { label: 'Externo', value: externos, color: '#E8A000' },
@@ -514,7 +514,7 @@ export class DashboardService {
   private buildCompliance(users: Usuario[]): ComplianceMetric[] {
     const total = users.length || 1;
     const ativosComEmail = users.filter((u) => u.vinculo === 'ATIVO' && u.emailInstitucional).length;
-    const perfilOk = users.filter((u) => !u.conformidade.includes('PERFIL_INCORRETO')).length;
+    const perfilOk = users.filter((u) => !u.conformidade.includes('PERFIL_INVALIDO')).length;
     const acessoValido = users.filter(
       (u) => !u.conformidade.some((c) => c === 'ACESSO_INVALIDO' || c === 'EXPIRADO'),
     ).length;
@@ -534,7 +534,7 @@ export class DashboardService {
       if (u.conformidade.includes('EXPIRADO')) w += 4;
       if (u.conformidade.includes('PROXIMO_EXPIRAR')) w += 2;
       if (u.conformidade.includes('SEM_EMAIL_INSTITUCIONAL')) w += 3;
-      if (u.conformidade.includes('PERFIL_INCORRETO')) w += 3;
+      if (u.conformidade.includes('PERFIL_INVALIDO')) w += 3;
       if (u.vinculo !== 'ATIVO') w += 2;
       if (u.ultimoAcesso === null) w += 2;
       return w;
@@ -555,7 +555,7 @@ export interface DashboardSnapshot {
   series2G: AccessSeriesResponse;
   heatmap: HeatmapCell[];
   vinculoDistribution: DistributionSlice[];
-  origemDistribution: DistributionSlice[];
+  tipoUsuarioDistribution: DistributionSlice[];
   perfilDistribution: DistributionSlice[];
   orgaoSistema: OrgaoSistemaBucket[];
   lastAccessBuckets: LastAccessBucket[];
@@ -564,7 +564,7 @@ export interface DashboardSnapshot {
   kpiUsers: {
     acessosCriticos: Usuario[];
     semEmail: Usuario[];
-    perfilIncorreto: Usuario[];
+    perfilInvalido: Usuario[];
     conformes: Usuario[];
   };
 }

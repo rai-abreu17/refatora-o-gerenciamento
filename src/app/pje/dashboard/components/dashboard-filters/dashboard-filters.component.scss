@@ -67,7 +67,8 @@
 
 .clear-btn {
   height: 36px;
-  align-self: center;
+  align-self: flex-end;
+  margin-bottom: 1px;
 
   mat-icon {
     font-size: 18px;

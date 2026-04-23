@@ -86,7 +86,7 @@ export class OdinManagementPanelComponent implements OnInit {
     { key: 'lotacao', label: 'Lotação' },
     { key: 'perfil', label: 'Perfil' },
     { key: 'situacao', label: 'Situação', type: 'badge' as const },
-    { key: 'origem', label: 'Origem' },
+    { key: 'origem', label: 'Tipo de Usuário' },
     { key: 'acoes', label: 'Ações', type: 'actions' as const }
   ];
 

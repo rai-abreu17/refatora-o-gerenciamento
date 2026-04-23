@@ -53,7 +53,7 @@ import { LookupService } from '../../../../shared/services/lookup.service';
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Origem</mat-label>
+          <mat-label>Tipo de Usuário</mat-label>
           <mat-select [formControl]="form.controls.origem">
             <mat-option value="">Todas</mat-option>
             <mat-option value="TRE-MA">TRE-MA</mat-option>

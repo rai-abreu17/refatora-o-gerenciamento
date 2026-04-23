@@ -40,8 +40,8 @@ export class DashboardComponent implements OnInit {
   vinculoSelection = signal<any>(null);
   bucketSelection = signal<any>(null);
   perfilSelection = signal<any>(null);
-  origemSelection = signal<any>(null);
-  activeModal = signal<'acessos-criticos' | 'sem-email' | 'perfil-incorreto' | 'taxa-conformidade' | 'heatmap-users' | 'vinculo-users' | 'bucket-users' | 'perfil-users' | 'origem-users' | null>(null);
+  tipoUsuarioSelection = signal<any>(null);
+  activeModal = signal<'acessos-criticos' | 'sem-email' | 'perfil-invalido' | 'taxa-conformidade' | 'heatmap-users' | 'vinculo-users' | 'bucket-users' | 'perfil-users' | 'tipo-usuario-users' | null>(null);
 
   onHeatmapCellClick(data: {dia: number, hora: number, count: number}): void {
     this.heatmapSelection.set(data);
@@ -63,9 +63,9 @@ export class DashboardComponent implements OnInit {
     this.activeModal.set('perfil-users');
   }
 
-  onOrigemSliceClick(slice: any): void {
-    this.origemSelection.set(slice);
-    this.activeModal.set('origem-users');
+  onTipoUsuarioSliceClick(slice: any): void {
+    this.tipoUsuarioSelection.set(slice);
+    this.activeModal.set('tipo-usuario-users');
   }
 
   modalData = computed(() => {
@@ -76,7 +76,7 @@ export class DashboardComponent implements OnInit {
     switch (modal) {
       case 'acessos-criticos': return { title: 'Acessos críticos', subtitle: 'Usuários com acesso inválido, expirado ou próximo de expirar', users: snap.kpiUsers.acessosCriticos, type: 'acessos-criticos' };
       case 'sem-email': return { title: 'Sem e-mail institucional', subtitle: 'Usuários que não possuem um e-mail institucional registrado', users: snap.kpiUsers.semEmail, type: 'semEmail' };
-      case 'perfil-incorreto': return { title: 'Perfil incorreto', subtitle: 'Usuários identificados com perfis incompatíveis', users: snap.kpiUsers.perfilIncorreto, type: 'perfil-incorreto' };
+      case 'perfil-invalido': return { title: 'Perfil inválido', subtitle: 'Usuários identificados com perfis incompatíveis', users: snap.kpiUsers.perfilInvalido, type: 'perfil-invalido' };
       case 'taxa-conformidade': return { title: 'Usuários regulares', subtitle: 'Usuários sem nenhuma pendência ou alerta de conformidade', users: snap.kpiUsers.conformes, type: 'taxa-conformidade' };
       case 'heatmap-users': {
         const sel = this.heatmapSelection();
@@ -86,7 +86,7 @@ export class DashboardComponent implements OnInit {
         const allUsers = [
           ...snap.kpiUsers.acessosCriticos, 
           ...snap.kpiUsers.semEmail, 
-          ...snap.kpiUsers.perfilIncorreto, 
+          ...snap.kpiUsers.perfilInvalido, 
           ...snap.kpiUsers.conformes
         ];
         
@@ -113,7 +113,7 @@ export class DashboardComponent implements OnInit {
         const allUsers = [
           ...snap.kpiUsers.acessosCriticos, 
           ...snap.kpiUsers.semEmail, 
-          ...snap.kpiUsers.perfilIncorreto, 
+          ...snap.kpiUsers.perfilInvalido, 
           ...snap.kpiUsers.conformes
         ];
         const uniqueUsers = Array.from(new Map(allUsers.map(u => [u.id, u])).values());
@@ -138,7 +138,7 @@ export class DashboardComponent implements OnInit {
         const allUsers = [
           ...snap.kpiUsers.acessosCriticos, 
           ...snap.kpiUsers.semEmail, 
-          ...snap.kpiUsers.perfilIncorreto, 
+          ...snap.kpiUsers.perfilInvalido, 
           ...snap.kpiUsers.conformes
         ];
         const uniqueUsers = Array.from(new Map(allUsers.map(u => [u.id, u])).values());
@@ -177,7 +177,7 @@ export class DashboardComponent implements OnInit {
         const allUsers = [
           ...snap.kpiUsers.acessosCriticos, 
           ...snap.kpiUsers.semEmail, 
-          ...snap.kpiUsers.perfilIncorreto, 
+          ...snap.kpiUsers.perfilInvalido, 
           ...snap.kpiUsers.conformes
         ];
         const uniqueUsers = Array.from(new Map(allUsers.map(u => [u.id, u])).values());
@@ -193,27 +193,27 @@ export class DashboardComponent implements OnInit {
           type: 'perfil-users' 
         };
       }
-      case 'origem-users': {
-        const sel = this.origemSelection();
+      case 'tipo-usuario-users': {
+        const sel = this.tipoUsuarioSelection();
         if (!sel) return null;
         
         const allUsers = [
           ...snap.kpiUsers.acessosCriticos, 
           ...snap.kpiUsers.semEmail, 
-          ...snap.kpiUsers.perfilIncorreto, 
+          ...snap.kpiUsers.perfilInvalido, 
           ...snap.kpiUsers.conformes
         ];
         const uniqueUsers = Array.from(new Map(allUsers.map(u => [u.id, u])).values());
         
-        // Comparação de origem: INTERNO vs EXTERNO
+        // Comparação de tipo de usuário: INTERNO vs EXTERNO
         const normalizedLabel = sel.label.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
-        const filtered = uniqueUsers.filter(u => u.origem.toUpperCase() === normalizedLabel);
+        const filtered = uniqueUsers.filter(u => u.tipoUsuario.toUpperCase() === normalizedLabel);
         
         return { 
-          title: `Origem do Usuário: ${sel.label}`, 
+          title: `Tipo de Usuário: ${sel.label}`, 
           subtitle: `${filtered.length.toLocaleString('pt-BR')} usuários são classificados como público ${sel.label.toLowerCase()}.`, 
           users: filtered, 
-          type: 'origem-users' 
+          type: 'tipo-usuario-users' 
         };
       }
       default: return null;
@@ -234,13 +234,13 @@ export class DashboardComponent implements OnInit {
     const data = this.modalData();
     if (!data || !data.users.length) return;
 
-    const headers = ['Nome', 'Matrícula', 'Órgão', 'Sistema', 'Origem', 'Situação', 'Último Acesso', 'Perfil', 'Setor/Lotação'];
+    const headers = ['Nome', 'Matrícula', 'Órgão', 'Sistema', 'Tipo de Usuário', 'Situação', 'Último Acesso', 'Perfil', 'Setor/Lotação'];
     const rows = data.users.map(u => [
       `"${u.nome}"`,
       `"${u.matricula}"`,
       `"${u.orgao}"`,
       `"${u.sistema}"`,
-      `"${u.origem}"`,
+      `"${u.tipoUsuario}"`,
       `"${u.vinculo}"`,
       `"${u.ultimoAcesso || 'Nunca acessou'}"`,
       `"${u.perfil}"`,

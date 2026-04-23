@@ -1,6 +1,6 @@
 export type Orgao = 'TRE-MA' | 'TSE';
 export type Sistema = 'PJe1G' | 'PJe2G';
-export type Origem = 'INTERNO' | 'EXTERNO';
+export type TipoUsuario = 'INTERNO' | 'EXTERNO';
 export type VinculoCadastral = 'ATIVO' | 'INATIVO' | 'SEM_VINCULO';
 export type PerfilPJe =
   | 'MAGISTRADO'
@@ -28,7 +28,7 @@ export type StatusConformidade =
   | 'EXPIRADO'
   | 'PROXIMO_EXPIRAR'
   | 'SEM_EMAIL_INSTITUCIONAL'
-  | 'PERFIL_INCORRETO';
+  | 'PERFIL_INVALIDO';
 
 export type Granularity = 'day' | 'week' | 'month' | 'year';
 
@@ -38,7 +38,7 @@ export interface Usuario {
   matricula: string;
   orgao: Orgao;
   sistema: Sistema;
-  origem: Origem;
+  tipoUsuario: TipoUsuario;
   vinculo: VinculoCadastral;
   perfil: PerfilPJe;
   localizacao: Localizacao;
@@ -48,8 +48,8 @@ export interface Usuario {
   emailInstitucional: boolean;
   emailPje?: string;
   emailTre?: string;
-  /** Motivo descritivo para quando o perfil está incorreto */
-  motivoPerfilIncorreto?: string;
+  /** Motivo descritivo para quando o perfil está inválido */
+  motivoPerfilInvalido?: string;
 }
 
 export interface DashboardFilters {
@@ -58,7 +58,7 @@ export interface DashboardFilters {
   endDate: Date | null;
   orgaos: Orgao[];
   sistemas: Sistema[];
-  origens: Origem[];
+  tiposUsuario: TipoUsuario[];
   perfis: PerfilPJe[];
   localizacoes: Localizacao[];
 }
@@ -69,7 +69,7 @@ export const EMPTY_FILTERS: DashboardFilters = {
   endDate: null,
   orgaos: [],
   sistemas: [],
-  origens: [],
+  tiposUsuario: [],
   perfis: [],
   localizacoes: [],
 };
@@ -150,7 +150,7 @@ export const SISTEMA_LABEL: Record<Sistema, string> = {
   PJe2G: 'PJe 2G',
 };
 
-export const ORIGEM_LABEL: Record<Origem, string> = {
+export const TIPO_USUARIO_LABEL: Record<TipoUsuario, string> = {
   INTERNO: 'Interno',
   EXTERNO: 'Externo',
 };
@@ -190,5 +190,5 @@ export const CONFORMIDADE_LABEL: Record<StatusConformidade, string> = {
   EXPIRADO: 'Acesso expirado',
   PROXIMO_EXPIRAR: 'Próximo de expirar',
   SEM_EMAIL_INSTITUCIONAL: 'Sem e-mail institucional',
-  PERFIL_INCORRETO: 'Perfil incorreto',
+  PERFIL_INVALIDO: 'Perfil inválido',
 };

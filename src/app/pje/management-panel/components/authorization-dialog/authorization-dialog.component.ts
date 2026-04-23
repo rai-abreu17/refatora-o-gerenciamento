@@ -33,7 +33,7 @@ import { PjeUserService, PjeAuthorization } from '../../../services/pje-user.ser
               <div class="auth-grid">
                 <span class="label">E-mail</span>
                 <span>{{ auth.email }}</span>
-                <span class="label">Origem Adj.</span>
+                <span class="label">Tipo Usu. Adj.</span>
                 <span>{{ auth.origemAdjudicador }}</span>
                 <span class="label">Modelo Loc.</span>
                 <span>{{ auth.modeloLocalizacao }}</span>

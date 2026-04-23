@@ -12,15 +12,15 @@ import {
   LOCALIZACAO_LABEL,
   Orgao,
   ORGAO_LABEL,
-  Origem,
-  ORIGEM_LABEL,
+  TipoUsuario,
+  TIPO_USUARIO_LABEL,
   PerfilPJe,
   PERFIL_LABEL,
   Sistema,
   SISTEMA_LABEL,
 } from '../../dashboard.model';
 
-type FilterKind = 'orgao' | 'sistema' | 'origem' | 'perfil' | 'localizacao';
+type FilterKind = 'orgao' | 'sistema' | 'tipoUsuario' | 'perfil' | 'localizacao';
 
 @Component({
   selector: 'app-dashboard-filters',
@@ -43,7 +43,7 @@ export class DashboardFiltersComponent {
 
   orgaos: Orgao[] = ['TRE-MA', 'TSE'];
   sistemas: Sistema[] = ['PJe1G', 'PJe2G'];
-  origens: Origem[] = ['INTERNO', 'EXTERNO'];
+  tiposUsuario: TipoUsuario[] = ['INTERNO', 'EXTERNO'];
   perfis: PerfilPJe[] = ['MAGISTRADO', 'SERVIDOR', 'ADVOGADO', 'PROCURADOR', 'ESTAGIARIO', 'PERITO'];
   localizacoes: Localizacao[] = [
     'SECRETARIA_JUDICIARIA',
@@ -61,7 +61,7 @@ export class DashboardFiltersComponent {
 
   orgaoLabel = ORGAO_LABEL;
   sistemaLabel = SISTEMA_LABEL;
-  origemLabel = ORIGEM_LABEL;
+  tipoUsuarioLabel = TIPO_USUARIO_LABEL;
   perfilLabel = PERFIL_LABEL;
   localizacaoLabel = LOCALIZACAO_LABEL;
 
@@ -95,7 +95,7 @@ export class DashboardFiltersComponent {
     return (
       f.orgaos.length +
         f.sistemas.length +
-        f.origens.length +
+        f.tiposUsuario.length +
         f.perfis.length +
         f.localizacoes.length >
         0 ||
@@ -106,12 +106,12 @@ export class DashboardFiltersComponent {
 
   private keyOf(kind: FilterKind): keyof Pick<
     DashboardFilters,
-    'orgaos' | 'sistemas' | 'origens' | 'perfis' | 'localizacoes'
+    'orgaos' | 'sistemas' | 'tiposUsuario' | 'perfis' | 'localizacoes'
   > {
     switch (kind) {
       case 'orgao': return 'orgaos';
       case 'sistema': return 'sistemas';
-      case 'origem': return 'origens';
+      case 'tipoUsuario': return 'tiposUsuario';
       case 'perfil': return 'perfis';
       case 'localizacao': return 'localizacoes';
     }
@@ -156,7 +156,7 @@ export class DashboardFiltersComponent {
       ...this.filters(),
       orgaos: [],
       sistemas: [],
-      origens: [],
+      tiposUsuario: [],
       perfis: [],
       localizacoes: [],
       startDate: null,

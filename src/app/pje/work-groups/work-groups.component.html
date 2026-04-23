@@ -10,7 +10,7 @@
 <div class="toolbar">
   <mat-form-field appearance="outline" class="search-field">
     <mat-label>Buscar grupos</mat-label>
-    <input matInput [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)" placeholder="Nome, origem...">
+    <input matInput [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)" placeholder="Nome, tipo de usuário...">
     <mat-icon matSuffix>search</mat-icon>
   </mat-form-field>
   <span class="record-count">{{ filteredGroups().length }} de {{ groups().length }} grupos</span>

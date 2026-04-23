@@ -132,8 +132,8 @@
                 <span class="checkmark"></span> <span class="checkbox-text">Sem e-mail institucional</span>
               </label>
               <label class="checkbox-label">
-                <input type="checkbox" [checked]="filterSituacao().includes('PERFIL_INCORRETO')" (change)="toggleFilterSelection('situacao', 'PERFIL_INCORRETO')">
-                <span class="checkmark"></span> <span class="checkbox-text">Perfil incorreto</span>
+                <input type="checkbox" [checked]="filterSituacao().includes('PERFIL_INVALIDO')" (change)="toggleFilterSelection('situacao', 'PERFIL_INVALIDO')">
+                <span class="checkmark"></span> <span class="checkbox-text">Perfil inválido</span>
               </label>
             </div>
           </div>
@@ -216,7 +216,7 @@
                       <span class="detail-label">E-mail no TRE-MA:</span>
                       <span class="detail-value" [class.text-danger]="!r.user.emailTre">{{ r.user.emailTre || 'Não cadastrado' }}</span>
                     </div>
-                  } @else if (modalType() === 'perfil-incorreto') {
+                  } @else if (modalType() === 'perfil-invalido') {
                     <div class="detail-group" style="width: 100%">
                       <span class="detail-label">Detalhes da Inconsistência de Perfil:</span>
                       <span class="detail-value" style="color: #d65e52; display: flex; align-items: center; gap: 6px; margin-top: 4px;">

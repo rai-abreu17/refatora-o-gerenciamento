@@ -86,7 +86,7 @@ export class CriticalUsersTableComponent {
     if (perfil.length) list = list.filter(u => perfil.includes(u.perfil));
     if (setor.length) list = list.filter(u => setor.includes(u.localizacao));
     
-    if (this.modalType() !== 'semEmail' && this.modalType() !== 'perfil-incorreto' && situacao.length) {
+    if (this.modalType() !== 'semEmail' && this.modalType() !== 'perfil-invalido' && situacao.length) {
       // O usuário deve ter apenas situações que estejam selecionadas no filtro
       list = list.filter(u => u.conformidade.every(c => situacao.includes(c)));
     }
@@ -141,7 +141,7 @@ export class CriticalUsersTableComponent {
       case 'EXPIRADO':
         return 'danger';
       case 'PROXIMO_EXPIRAR':
-      case 'PERFIL_INCORRETO':
+      case 'PERFIL_INVALIDO':
         return 'warning';
       case 'SEM_EMAIL_INSTITUCIONAL':
         return 'accent';

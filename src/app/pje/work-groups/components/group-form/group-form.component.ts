@@ -31,7 +31,7 @@ import { LookupService } from '../../../../shared/services/lookup.service';
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Origem</mat-label>
+          <mat-label>Tipo de Usuário</mat-label>
           <mat-select formControlName="origem">
             <mat-option value="">Selecione...</mat-option>
             @for (o of origens; track o) {
@@ -39,7 +39,7 @@ import { LookupService } from '../../../../shared/services/lookup.service';
             }
           </mat-select>
           @if (form.controls['origem'].hasError('required') && form.controls['origem'].touched) {
-            <mat-error>Origem e obrigatoria.</mat-error>
+            <mat-error>Tipo de usuário é obrigatório.</mat-error>
           }
         </mat-form-field>
       </form>
