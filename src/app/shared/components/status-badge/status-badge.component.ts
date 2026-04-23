@@ -15,7 +15,8 @@ export class StatusBadgeComponent {
     const s = this.status().toLowerCase();
     if (['ativo', 'vigente', 'sim'].includes(s)) return 'badge-active';
     if (['inativo', 'expirado', 'não', 'nao'].includes(s)) return 'badge-inactive';
-    if (['inexistente', 'sem vínculo', 'sem vinculo'].includes(s)) return 'badge-gray';
+    if (['inexistente'].includes(s)) return 'badge-gray';
+    if (['sem vínculo', 'sem vinculo'].includes(s)) return 'badge-warning';
     return 'badge-secondary';
   });
 }

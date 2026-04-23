@@ -31,7 +31,8 @@ export class StatusChipComponent {
     const s = this.status().toLowerCase();
     if (['ativo', 'vigente', 'sim'].includes(s)) return 'status-active';
     if (['inativo', 'expirado', 'não', 'nao'].includes(s)) return 'status-inactive';
-    if (['inexistente', 'sem vínculo', 'sem vinculo'].includes(s)) return 'status-gray';
+    if (['inexistente'].includes(s)) return 'status-gray';
+    if (['sem vínculo', 'sem vinculo'].includes(s)) return 'status-warning';
     return 'status-warning';
   });
 

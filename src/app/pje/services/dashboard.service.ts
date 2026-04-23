@@ -445,7 +445,7 @@ export class DashboardService {
     return [
       { label: 'Ativo', value: ativos, color: '#2E7D32' },
       { label: 'Inativo', value: inativos, color: '#C62828' },
-      { label: 'Sem vínculo', value: sem, color: '#9E9E9E' },
+      { label: 'Sem vínculo', value: sem, color: '#F59E0B' },
     ];
   }
 
