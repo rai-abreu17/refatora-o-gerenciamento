@@ -22,6 +22,23 @@
   width: 100%;
 }
 
+.dashboard-hint {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #E3F2FD;
+  border-left: 4px solid #1B4F8A;
+  color: #0F3360;
+  padding: 12px 16px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin-bottom: -16px; /* Ajusta o espaçamento para compensar o gap do grid abaixo */
+  
+  &__icon {
+    color: #1B4F8A;
+  }
+}
+
 // Trend chart (Acessos ao PJe) + Vínculo cadastral lado a lado
 .trend-row {
   display: flex;

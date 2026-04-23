@@ -10,6 +10,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     <mat-icon
       class="info-icon"
       [matTooltip]="text()"
+      [matTooltipShowDelay]="0"
       matTooltipPosition="above"
       matTooltipClass="info-tooltip-panel"
       [style.color]="color()"
@@ -25,17 +26,19 @@ import { MatTooltipModule } from '@angular/material/tooltip';
       vertical-align: middle;
       margin-left: 6px;
       position: relative;
-      top: -1px; /* Ajuste fino para alinhar o centro do ícone com o centro do texto */
+      top: -1px;
     }
     .info-icon {
       font-size: 18px;
       width: 18px;
       height: 18px;
       color: var(--color-primary, #1B4F8A);
-      cursor: help;
       opacity: 0.9;
       transition: opacity 0.15s ease, color 0.15s ease, transform 0.15s ease;
       user-select: none;
+      margin-left: 6px;
+      position: relative;
+      top: -1px;
     }
     .info-icon:hover {
       opacity: 1;

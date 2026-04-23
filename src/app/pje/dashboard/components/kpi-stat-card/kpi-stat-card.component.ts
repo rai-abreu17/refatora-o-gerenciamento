@@ -58,8 +58,8 @@ const TONE_BG: Record<KpiTone, string> = {
       <div class="kpi__value-row" style="display: flex; justify-content: space-between; align-items: flex-end;">
         <div class="kpi__value">{{ value() }}</div>
         <span class="kpi__action-hint" aria-hidden="true" style="display: flex; align-items: center; gap: 4px; font-size: 0.72rem; opacity: 0; transform: translateY(4px); transition: all 0.2s ease;">
-          <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path><path d="M13 13l6 6"></path></svg>
-          Ver detalhes
+          <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Mais detalhes
         </span>
       </div>
       @if (hint()) {

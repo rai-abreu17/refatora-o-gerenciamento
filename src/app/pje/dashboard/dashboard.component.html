@@ -7,6 +7,11 @@
   </app-dashboard-filters>
 
   @if (snapshot(); as snap) {
+    <div class="dashboard-hint" role="note">
+      <mat-icon class="dashboard-hint__icon">lightbulb</mat-icon>
+      <span><strong>Dica de navegação:</strong> O dashboard é interativo! Você pode clicar nos cartões e nas fatias dos gráficos para abrir a lista detalhada de usuários referentes àquele dado.</span>
+    </div>
+
     <section class="kpi-grid" aria-label="Indicadores-chave">
       @for (k of snap.kpis; track k.id) {
         <app-kpi-stat-card
@@ -73,6 +78,7 @@
           [variant]="'grouped-bar'"
           [categories]="orgaoSistemaCategories()"
           [series]="orgaoSistemaSeries(snap)"
+          [clickable]="false"
           infoText="Compara o volume de usuários por órgão (TRE-MA e TSE) e por geração do sistema (PJe 1G e 2G). Útil para análise institucional cruzada e planejamento de migração entre gerações do sistema.">
         </app-distribution-chart>
       </div>

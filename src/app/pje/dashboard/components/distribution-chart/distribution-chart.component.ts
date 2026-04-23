@@ -40,6 +40,7 @@ export class DistributionChartComponent {
   series = input<GroupedSeries[]>([]);
   subtitle = input<string>('');
   infoText = input<string>('');
+  clickable = input<boolean>(true);
 
   sliceClick = output<DistributionSlice>();
 
