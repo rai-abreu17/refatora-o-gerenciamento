@@ -1,10 +1,16 @@
 <section class="buckets-card" aria-labelledby="buckets-title">
-  <header class="buckets-card__head">
-    <h3 id="buckets-title" class="buckets-card__title">
-      Último acesso dos usuários
-      <app-info-tooltip text="Distribui os usuários pelo tempo decorrido desde o último login no sistema. Contas com mais de 90 dias de inatividade ou que nunca acessaram devem ser revisadas — podem indicar perfis obsoletos ou riscos de conformidade."></app-info-tooltip>
-    </h3>
-    <p class="buckets-card__subtitle">Distribuição por faixa de inatividade</p>
+  <header class="buckets-card__head" style="display: flex; justify-content: space-between; align-items: flex-start;">
+    <div>
+      <h3 id="buckets-title" class="buckets-card__title">
+        Último acesso dos usuários
+        <app-info-tooltip text="Distribui os usuários pelo tempo decorrido desde o último login no sistema. Contas com mais de 90 dias de inatividade ou que nunca acessaram devem ser revisadas — podem indicar perfis obsoletos ou riscos de conformidade."></app-info-tooltip>
+      </h3>
+      <p class="buckets-card__subtitle">Distribuição por faixa de inatividade</p>
+    </div>
+    <span class="click-hint" aria-hidden="true" title="Clique em uma faixa para detalhar os usuários">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path><path d="M13 13l6 6"></path></svg>
+      Ver detalhes
+    </span>
   </header>
 
   <div class="buckets-list" role="list">

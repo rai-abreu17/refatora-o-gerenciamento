@@ -192,6 +192,28 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: var(--space-md);
 }
 
+// Click to detail hint
+.click-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: var(--color-primary);
+  background: rgba(27, 79, 138, 0.08);
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+  user-select: none;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+.click-hint:hover {
+  background: rgba(27, 79, 138, 0.15);
+}
+.click-hint svg {
+  width: 12px;
+  height: 12px;
+}
+
 // Empty state
 .empty-state {
   text-align: center;

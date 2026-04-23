@@ -6,14 +6,20 @@
         <app-info-tooltip text="Mapa de calor que exibe a concentração de logins por hora do dia e dia da semana. Células mais escuras indicam maior volume de acessos. Útil para identificar padrões de uso, horários de pico e períodos de baixa atividade."></app-info-tooltip>
       </h3>
     </div>
-    <div class="heatmap-legend" aria-hidden="true">
-      <span class="heatmap-legend__label">Menos</span>
-      <span class="heatmap-legend__step" [style.background]="cellColor(0)"></span>
-      <span class="heatmap-legend__step" [style.background]="cellColor(maxSample() * 0.25)"></span>
-      <span class="heatmap-legend__step" [style.background]="cellColor(maxSample() * 0.5)"></span>
-      <span class="heatmap-legend__step" [style.background]="cellColor(maxSample() * 0.75)"></span>
-      <span class="heatmap-legend__step" [style.background]="cellColor(maxSample())"></span>
-      <span class="heatmap-legend__label">Mais</span>
+    <div class="heatmap-legend" aria-hidden="true" style="display: flex; align-items: center; gap: 12px;">
+      <span class="click-hint" style="margin-right: 8px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path><path d="M13 13l6 6"></path></svg>
+        Ver detalhes
+      </span>
+      <div style="display: flex; align-items: center; gap: 4px;">
+        <span class="heatmap-legend__label">Menos</span>
+        <span class="heatmap-legend__step" [style.background]="cellColor(0)"></span>
+        <span class="heatmap-legend__step" [style.background]="cellColor(maxSample() * 0.25)"></span>
+        <span class="heatmap-legend__step" [style.background]="cellColor(maxSample() * 0.5)"></span>
+        <span class="heatmap-legend__step" [style.background]="cellColor(maxSample() * 0.75)"></span>
+        <span class="heatmap-legend__step" [style.background]="cellColor(maxSample())"></span>
+        <span class="heatmap-legend__label">Mais</span>
+      </div>
     </div>
   </header>
 

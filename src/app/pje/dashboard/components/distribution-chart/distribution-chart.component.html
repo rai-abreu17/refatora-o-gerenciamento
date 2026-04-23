@@ -1,14 +1,20 @@
 <section class="dist-card" [attr.aria-labelledby]="'dist-title-' + title()">
-  <header class="dist-card__head">
-    <h3 class="dist-card__title" [id]="'dist-title-' + title()">
-      {{ title() }}
-      @if (infoText()) {
-        <app-info-tooltip [text]="infoText()"></app-info-tooltip>
+  <header class="dist-card__head" style="display: flex; justify-content: space-between; align-items: flex-start;">
+    <div>
+      <h3 class="dist-card__title" [id]="'dist-title-' + title()">
+        {{ title() }}
+        @if (infoText()) {
+          <app-info-tooltip [text]="infoText()"></app-info-tooltip>
+        }
+      </h3>
+      @if (subtitle()) {
+        <p class="dist-card__subtitle">{{ subtitle() }}</p>
       }
-    </h3>
-    @if (subtitle()) {
-      <p class="dist-card__subtitle">{{ subtitle() }}</p>
-    }
+    </div>
+    <span class="click-hint" aria-hidden="true" title="Clique no gráfico para detalhar os usuários">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path><path d="M13 13l6 6"></path></svg>
+      Ver detalhes
+    </span>
   </header>
   <div class="dist-card__chart"
        [class.dist-card__chart--donut]="variant() === 'donut'">
