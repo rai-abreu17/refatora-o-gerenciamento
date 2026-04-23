@@ -116,7 +116,7 @@ export class CriticalUsersTableComponent {
           ? 'ok'
           : u.vinculo === 'INATIVO'
             ? 'danger'
-            : 'gray',
+            : 'warning',
     })),
   );
 
