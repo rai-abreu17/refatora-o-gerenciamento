@@ -1,6 +1,7 @@
 import { Component, computed, input, output } from '@angular/core';
 import { HeatmapCell } from '../../dashboard.model';
 import { InfoTooltipComponent } from '../../../../shared/components/info-tooltip/info-tooltip.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 const DIA_LABEL = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 const HORAS = Array.from({ length: 24 }, (_, i) => i);
@@ -8,7 +9,7 @@ const HORAS = Array.from({ length: 24 }, (_, i) => i);
 @Component({
   selector: 'app-login-heatmap',
   standalone: true,
-  imports: [InfoTooltipComponent],
+  imports: [InfoTooltipComponent, MatTooltipModule],
   templateUrl: './login-heatmap.component.html',
   styleUrl: './login-heatmap.component.scss',
 })

@@ -1,11 +1,12 @@
 import { Component, computed, input, output } from '@angular/core';
 import { LastAccessBucket } from '../../dashboard.model';
 import { InfoTooltipComponent } from '../../../../shared/components/info-tooltip/info-tooltip.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-last-access-buckets',
   standalone: true,
-  imports: [InfoTooltipComponent],
+  imports: [InfoTooltipComponent, MatTooltipModule],
   templateUrl: './last-access-buckets.component.html',
   styleUrl: './last-access-buckets.component.scss',
 })

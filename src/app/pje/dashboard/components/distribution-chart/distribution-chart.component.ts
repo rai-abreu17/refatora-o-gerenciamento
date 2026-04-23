@@ -1,6 +1,7 @@
 import { Component, computed, input, output } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
 import { InfoTooltipComponent } from '../../../../shared/components/info-tooltip/info-tooltip.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   ArcElement,
   BarController,
@@ -28,7 +29,7 @@ export interface GroupedSeries {
 @Component({
   selector: 'app-distribution-chart',
   standalone: true,
-  imports: [BaseChartDirective, InfoTooltipComponent],
+  imports: [BaseChartDirective, InfoTooltipComponent, MatTooltipModule],
   templateUrl: './distribution-chart.component.html',
   styleUrl: './distribution-chart.component.scss',
 })
