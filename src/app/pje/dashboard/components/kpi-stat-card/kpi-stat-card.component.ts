@@ -40,7 +40,7 @@ const TONE_BG: Record<KpiTone, string> = {
     <article
       class="kpi"
       [style.background]="bg()"
-      [attr.aria-label]="title() + ', valor ' + value()">
+      [attr.aria-label]="ariaLabel()">
       <header class="kpi__head">
         <span class="kpi__title">{{ title() }}</span>
         <span class="kpi__head-right">
@@ -55,13 +55,28 @@ const TONE_BG: Record<KpiTone, string> = {
           }
         </span>
       </header>
-      <div class="kpi__value-row" style="display: flex; justify-content: space-between; align-items: flex-end;">
-        <div class="kpi__value">{{ value() }}</div>
-        <span class="kpi__action-hint" aria-hidden="true" style="display: flex; align-items: center; gap: 4px; font-size: 0.72rem; opacity: 0; transform: translateY(4px); transition: all 0.2s ease;">
-          <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-          Mais detalhes
-        </span>
-      </div>
+
+      @if (secondaryValue()) {
+        <div class="kpi__metrics">
+          <div class="kpi__metric">
+            <div class="kpi__value">{{ value() }}</div>
+            <div class="kpi__metric-label">{{ valueLabel() }}</div>
+          </div>
+          <div class="kpi__metric">
+            <div class="kpi__value">{{ secondaryValue() }}</div>
+            <div class="kpi__metric-label">{{ secondaryLabel() }}</div>
+          </div>
+        </div>
+      } @else {
+        <div class="kpi__value-row">
+          <div class="kpi__value">{{ value() }}</div>
+          <span class="kpi__action-hint" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Mais detalhes
+          </span>
+        </div>
+      }
+
       @if (hint()) {
         <div class="kpi__hint">{{ hint() }}</div>
       }
@@ -71,13 +86,17 @@ const TONE_BG: Record<KpiTone, string> = {
     </article>
   `,
   styles: [`
-    :host { display: block; }
+    /* :host vira flex para que o <article> preencha 100% da célula do grid,
+       fazendo todos os cards terem a mesma altura. */
+    :host { display: flex; }
     .kpi {
       position: relative;
       color: #fff;
       border-radius: 14px;
-      padding: 16px 18px 8px;
+      /* padding-bottom: 0 → o sparkline cola na base do card. */
+      padding: 16px 18px 0;
       min-height: 132px;
+      flex: 1;
       display: flex;
       flex-direction: column;
       gap: 4px;
@@ -104,15 +123,42 @@ const TONE_BG: Record<KpiTone, string> = {
       white-space: nowrap;
     }
     .kpi__delta--neg { background: rgba(0, 0, 0, 0.25); }
+    .kpi__value-row { display: flex; justify-content: space-between; align-items: flex-end; }
+    .kpi__action-hint {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.72rem;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: all 0.2s ease;
+    }
     .kpi__value {
       font-size: 1.9rem;
       font-weight: 700;
       line-height: 1.15;
       font-variant-numeric: tabular-nums;
     }
+    /* Métricas lado a lado — ambos os valores compartilham .kpi__value
+       (mesmo tamanho e peso). Separação só pelo gap do flex, sem divisores. */
+    .kpi__metrics {
+      display: flex;
+      align-items: flex-end;
+      gap: 28px;
+    }
+    .kpi__metric { display: flex; flex-direction: column; min-width: 0; }
+    .kpi__metric-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      opacity: 0.78;
+      margin-top: 4px;
+    }
     .kpi__hint {
       font-size: 0.78rem;
       opacity: 0.85;
+      margin-top: 8px;
     }
     .kpi__spark {
       position: relative;
@@ -125,6 +171,12 @@ const TONE_BG: Record<KpiTone, string> = {
 export class KpiStatCardComponent implements AfterViewInit, OnDestroy {
   title = input.required<string>();
   value = input.required<string>();
+  /** Rótulo da métrica principal (ex.: "Usuários"). Exibido apenas no modo dual. */
+  valueLabel = input<string>('');
+  /** Métrica secundária opcional. Quando preenchida, o card adota o layout de duas colunas. */
+  secondaryValue = input<string>('');
+  /** Rótulo da métrica secundária (ex.: "Perfis"). */
+  secondaryLabel = input<string>('');
   deltaPct = input<number | null>(null);
   sparkline = input<number[]>([]);
   tone = input<KpiTone>('primary');
@@ -153,6 +205,13 @@ export class KpiStatCardComponent implements AfterViewInit, OnDestroy {
 
   bg(): string {
     return TONE_BG[this.tone()];
+  }
+
+  ariaLabel(): string {
+    const base = `${this.title()}, ${this.valueLabel() || 'valor'} ${this.value()}`;
+    return this.secondaryValue()
+      ? `${base}, ${this.secondaryLabel()} ${this.secondaryValue()}`
+      : base;
   }
 
   formatDelta(v: number): string {

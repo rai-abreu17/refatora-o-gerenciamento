@@ -11,9 +11,10 @@
 
   <section class="kpi-grid" aria-label="Indicadores-chave">
     @for (k of snap.kpis; track k.id) {
-    <app-kpi-stat-card [title]="k.title" [value]="k.value" [deltaPct]="k.deltaPct" [sparkline]="k.sparkline"
-      [tone]="k.tone" [hint]="k.hint ?? ''" [infoText]="k.infoText ?? ''" (click)="openModal(k.id)"
-      [class.clickable]="k.id !== 'total-usuarios'">
+    <app-kpi-stat-card [title]="k.title" [value]="k.value" [valueLabel]="k.valueLabel ?? ''"
+      [secondaryValue]="k.secondaryValue ?? ''" [secondaryLabel]="k.secondaryLabel ?? ''" [deltaPct]="k.deltaPct"
+      [sparkline]="k.sparkline" [tone]="k.tone" [hint]="k.hint ?? ''" [infoText]="k.infoText ?? ''"
+      (click)="openModal(k.id)" [class.clickable]="k.id !== 'total-usuarios'">
     </app-kpi-stat-card>
     }
   </section>

@@ -45,6 +45,8 @@ export interface Usuario {
   conformidade: StatusConformidade[];
   /** ISO date (yyyy-MM-dd) ou null quando o usuário nunca acessou */
   ultimoAcesso: string | null;
+  /** ISO date (yyyy-MM-dd) — data limite de validade do perfil. */
+  dataExpiracao: string;
   emailInstitucional: boolean;
   emailPje?: string;
   emailTre?: string;
@@ -80,6 +82,12 @@ export interface KpiCardData {
   id: string;
   title: string;
   value: string;
+  /** Rótulo opcional do valor principal — usado quando o card exibe duas métricas (ex.: "Usuários"). */
+  valueLabel?: string;
+  /** Valor secundário opcional para cards com duas métricas (ex.: total de perfis). */
+  secondaryValue?: string;
+  /** Rótulo da métrica secundária (ex.: "Perfis"). */
+  secondaryLabel?: string;
   /** Variação percentual vs período anterior. Positivo/negativo muda o ícone. */
   deltaPct: number | null;
   /** Série para a sparkline (8–12 pontos) */

@@ -74,7 +74,7 @@ export class DashboardComponent implements OnInit {
     if (!snap || !modal) return null;
 
     switch (modal) {
-      case 'acessos-criticos': return { title: 'Acessos críticos', subtitle: 'Usuários com acesso inválido, expirado ou próximo de expirar', users: snap.kpiUsers.acessosCriticos, type: 'acessos-criticos' };
+      case 'acessos-criticos': return { title: 'Acessos críticos', subtitle: 'Usuários que continuam acessando o sistema após a expiração do perfil.', users: snap.kpiUsers.acessosCriticos, type: 'acessos-criticos' };
       case 'sem-email': return { title: 'Sem e-mail institucional', subtitle: 'Usuários que não possuem um e-mail institucional registrado', users: snap.kpiUsers.semEmail, type: 'semEmail' };
       case 'perfil-invalido': return { title: 'Perfil inválido', subtitle: 'Usuários identificados com perfis incompatíveis', users: snap.kpiUsers.perfilInvalido, type: 'perfil-invalido' };
       case 'taxa-conformidade': return { title: 'Usuários regulares', subtitle: 'Usuários sem nenhuma pendência ou alerta de conformidade', users: snap.kpiUsers.conformes, type: 'taxa-conformidade' };

@@ -17,6 +17,9 @@
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  /* Força todos os cards a esticarem até a maior altura da linha,
+     garantindo que as bases (sparklines) fiquem alinhadas. */
+  align-items: stretch;
   gap: var(--space-md, 20px);
   /* fallback para 20px */
   width: 100%;

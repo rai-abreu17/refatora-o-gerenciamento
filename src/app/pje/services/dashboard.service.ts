@@ -88,11 +88,23 @@ export class DashboardService {
     return of({ sistema: norm, data, total, peak, lowest }).pipe(delay(300));
   }
 
+  /**
+   * Acesso crítico = usuário cujo perfil já passou da data de expiração
+   * E o último acesso é estritamente posterior a essa data.
+   */
+  private isAcessoAposExpiracao(u: Usuario, hoje: number = Date.now()): boolean {
+    if (!u.ultimoAcesso) return false;
+    const expiracao = new Date(u.dataExpiracao).getTime();
+    const ultimo = new Date(u.ultimoAcesso).getTime();
+    return expiracao < hoje && ultimo > expiracao;
+  }
+
   /** Snapshot completo usado pelo novo dashboard. */
   getSnapshot(filters: DashboardFilters): Observable<DashboardSnapshot> {
     const filtered = this.filterUsuarios(filters);
+    const agora = Date.now();
     const kpiUsers = {
-      acessosCriticos: filtered.filter((u) => u.conformidade.some((c) => c === 'EXPIRADO' || c === 'ACESSO_INVALIDO' || c === 'PROXIMO_EXPIRAR')),
+      acessosCriticos: filtered.filter((u) => this.isAcessoAposExpiracao(u, agora)),
       semEmail: filtered.filter((u) => !u.emailInstitucional),
       perfilInvalido: filtered.filter((u) => u.conformidade.includes('PERFIL_INVALIDO')),
       conformes: filtered.filter((u) => u.conformidade.length === 1 && u.conformidade[0] === 'OK')
@@ -215,7 +227,17 @@ export class DashboardService {
       const emailTre = emailInstitucional ? emailBase + (orgao === 'TRE-MA' ? 'tre-ma.jus.br' : 'tse.jus.br') : '';
       if (vinculo === 'INATIVO' && !nunca && rng() < 0.6) conformidade.push('ACESSO_INVALIDO');
       if (vinculo === 'SEM_VINCULO' && rng() < 0.7) conformidade.push('ACESSO_INVALIDO');
-      if (rng() < 0.09) conformidade.push('EXPIRADO');
+
+      // Data de expiração do perfil — ~9% já estão expirados (offset negativo).
+      const expirou = rng() < 0.09;
+      const diasOffsetExp = expirou
+        ? -Math.floor(5 + rng() * 360)
+        : Math.floor(30 + rng() * 1065);
+      const dExp = new Date(hoje);
+      dExp.setDate(dExp.getDate() + diasOffsetExp);
+      const dataExpiracao = dExp.toISOString().split('T')[0];
+      if (expirou) conformidade.push('EXPIRADO');
+
       if (rng() < 0.12) conformidade.push('PROXIMO_EXPIRAR');
       
       let motivoPerfilInvalido: string | undefined = undefined;
@@ -248,6 +270,7 @@ export class DashboardService {
         localizacao,
         conformidade,
         ultimoAcesso,
+        dataExpiracao,
         emailInstitucional,
         emailPje,
         emailTre,
@@ -282,10 +305,10 @@ export class DashboardService {
 
   private buildKpis(users: Usuario[], f: DashboardFilters): KpiCardData[] {
     const total = users.length;
-    const ativos = users.filter((u) => u.vinculo === 'ATIVO').length;
-    const expiradosInvalidos = users.filter((u) =>
-      u.conformidade.some((c) => c === 'EXPIRADO' || c === 'ACESSO_INVALIDO' || c === 'PROXIMO_EXPIRAR'),
-    ).length;
+    // Um usuário pode ter múltiplos perfis (ex.: servidores internos costumam acumular papéis).
+    // O mock simula esse cenário somando um perfil extra para usuários internos.
+    const totalPerfis = total + users.filter((u) => u.tipoUsuario === 'INTERNO').length;
+    const acessosAposExpiracao = users.filter((u) => this.isAcessoAposExpiracao(u)).length;
     const semEmail = users.filter((u) => !u.emailInstitucional).length;
     const perfilInvalido = users.filter((u) => u.conformidade.includes('PERFIL_INVALIDO')).length;
     const conformes = users.filter((u) => u.conformidade.length === 1 && u.conformidade[0] === 'OK').length;
@@ -302,23 +325,25 @@ export class DashboardService {
     return [
       {
         id: 'total-usuarios',
-        title: 'Total de usuários',
+        title: 'Total de usuários e perfis',
         value: total.toLocaleString('pt-BR'),
+        valueLabel: 'Usuários',
+        secondaryValue: totalPerfis.toLocaleString('pt-BR'),
+        secondaryLabel: 'Perfis',
         deltaPct: this.pctFake(rng, -2, 6),
         sparkline: spark(total),
         tone: 'primary',
-        hint: `${ativos.toLocaleString('pt-BR')} ativos (${pct(ativos, total)}%)`,
-        infoText: 'Total de usuários cadastrados no PJe, contemplando todos os status de vínculo.',
+        infoText: 'Total de usuários cadastrados no PJe e a soma de perfis vinculados — um mesmo usuário pode acumular mais de um perfil (ex.: papéis administrativos e judiciais).',
       },
       {
         id: 'acessos-criticos',
         title: 'Acessos críticos',
-        value: expiradosInvalidos.toLocaleString('pt-BR'),
+        value: acessosAposExpiracao.toLocaleString('pt-BR'),
         deltaPct: this.pctFake(rng, -12, 4),
-        sparkline: spark(expiradosInvalidos, 0.25),
+        sparkline: spark(acessosAposExpiracao, 0.25),
         tone: 'danger',
-        hint: 'expirados + inválidos + próximos',
-        infoText: 'Soma de usuários com acesso inválido, expirado ou próximo de expirar. Requer atenção imediata.',
+        hint: 'Acessos após a data de expiração',
+        infoText: 'Usuários que continuam acessando o sistema mesmo após a data de expiração do perfil. Requer atenção imediata.',
       },
       {
         id: 'sem-email',
